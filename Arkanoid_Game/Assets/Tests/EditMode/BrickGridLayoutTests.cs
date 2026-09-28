@@ -5,86 +5,15 @@ public class BrickGridLayoutTests
 {
     private const float Tolerance = 0.0001f;
 
-    private static readonly Vector2Int[] SpecGoldCells =
-    {
-        new Vector2Int(5, 0),
-        new Vector2Int(5, 3),
-        new Vector2Int(5, 6),
-        new Vector2Int(5, 9),
-        new Vector2Int(5, 12)
-    };
-
     private BrickGridLayout CreateSpecLayout()
     {
-        return new BrickGridLayout(6, 13, -6.5f, 9.07f, 2f, new Vector2(1f, 0.5f), SpecGoldCells);
+        return new BrickGridLayout(6, 13, -6.5f, 9.07f, 2f, new Vector2(1f, 0.5f));
     }
 
     [Test]
-    public void Count_IsSeventyEightWithFiveGoldAndSeventyThreeDestructible()
+    public void Count_IsThirteenBySixSeventyEight()
     {
-        BrickGridLayout layout = CreateSpecLayout();
-
-        Assert.AreEqual(78, layout.Count);
-        Assert.AreEqual(5, layout.GoldCount);
-        Assert.AreEqual(73, layout.DestructibleCount);
-    }
-
-    [Test]
-    public void IsGoldCell_OnlySixthRowColumnsOneFourSevenTenThirteen()
-    {
-        BrickGridLayout layout = CreateSpecLayout();
-        int[] goldColumnsOneBased = { 1, 4, 7, 10, 13 };
-
-        for (int row = 0; row < layout.Rows; row++)
-        {
-            for (int column = 0; column < layout.Columns; column++)
-            {
-                bool expected = row == 5 && System.Array.IndexOf(goldColumnsOneBased, column + 1) >= 0;
-                Assert.AreEqual(expected, layout.IsGoldCell(row, column), $"row {row + 1}, column {column + 1}");
-            }
-        }
-    }
-
-    [Test]
-    public void GoldCells_OutOfRangeOrDuplicate_AreIgnored()
-    {
-        Vector2Int[] cells = { new Vector2Int(5, 0), new Vector2Int(5, 0), new Vector2Int(6, 0), new Vector2Int(0, 13), new Vector2Int(-1, 2) };
-
-        BrickGridLayout layout = new BrickGridLayout(6, 13, -6.5f, 9.07f, 2f, new Vector2(1f, 0.5f), cells);
-
-        Assert.AreEqual(1, layout.GoldCount);
-        Assert.AreEqual(77, layout.DestructibleCount);
-    }
-
-    [Test]
-    public void DestroyingAllDestructible_ClearsStageWhileGoldRemains()
-    {
-        BrickGridLayout layout = CreateSpecLayout();
-        int remaining = layout.DestructibleCount;
-
-        for (int destroyed = 0; destroyed < 72; destroyed++)
-        {
-            remaining--;
-        }
-        Assert.IsFalse(GameSession.IsStageCleared(remaining));
-
-        remaining--;
-        Assert.IsTrue(GameSession.IsStageCleared(remaining));
-        Assert.AreEqual(5, layout.GoldCount);
-    }
-
-    [Test]
-    public void FromConfig_DefaultStageConfigHasSpecGoldCells()
-    {
-        StageConfig config = ScriptableObject.CreateInstance<StageConfig>();
-        BrickGridLayout fromConfig = BrickGridLayout.FromConfig(config);
-        Object.DestroyImmediate(config);
-
-        Assert.AreEqual(5, fromConfig.GoldCount);
-        foreach (Vector2Int cell in SpecGoldCells)
-        {
-            Assert.IsTrue(fromConfig.IsGoldCell(cell.x, cell.y));
-        }
+        Assert.AreEqual(78, CreateSpecLayout().Count);
     }
 
     [Test]
