@@ -21,6 +21,14 @@ public class GameSession
         HighScore = Mathf.Max(HighScore, Score);
     }
 
+    public void AddLife(int maxReserveLives)
+    {
+        if (ReserveLives < maxReserveLives)
+        {
+            Lives++;
+        }
+    }
+
     public void LoseLife()
     {
         Lives = Mathf.Max(Lives - 1, 0);

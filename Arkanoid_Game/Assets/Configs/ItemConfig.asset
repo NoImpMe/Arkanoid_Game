@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1eb586ff798142408ed6cadcbe0069c, type: 3}
+  m_Name: ItemConfig
+  m_EditorClassIdentifier: Arkanoid::ItemConfig
+  dropChance: 0.2
+  items:
+  - type: 0
+    letter: L
+    tint: {r: 1, g: 0.25, b: 0.25, a: 1}
+    dropWeight: 18
+  - type: 1
+    letter: E
+    tint: {r: 0.35, g: 0.55, b: 1, a: 1}
+    dropWeight: 18
+  - type: 2
+    letter: C
+    tint: {r: 0.3, g: 0.9, b: 0.35, a: 1}
+    dropWeight: 18
+  - type: 3
+    letter: S
+    tint: {r: 1, g: 0.6, b: 0.15, a: 1}
+    dropWeight: 18
+  - type: 4
+    letter: D
+    tint: {r: 0.45, g: 0.9, b: 1, a: 1}
+    dropWeight: 18
+  - type: 5
+    letter: P
+    tint: {r: 0.75, g: 0.75, b: 0.75, a: 1}
+    dropWeight: 10
+  capsuleSize: {x: 1, y: 0.5}
+  fallSpeed: 3
+  capsuleSprite: {fileID: 906437850, guid: c2197fec08247f149926565c674404ac, type: 3}
+  letterFontSize: 3
+  letterColor: {r: 1, g: 1, b: 1, a: 1}
+  maxReserveLives: 5

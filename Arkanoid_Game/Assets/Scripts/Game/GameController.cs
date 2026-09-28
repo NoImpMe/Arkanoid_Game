@@ -5,10 +5,12 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     [SerializeField] private GameConfig gameConfig;
+    [SerializeField] private ItemConfig itemConfig;
     [SerializeField] private Paddle paddle;
     [SerializeField] private Ball ball;
     [SerializeField] private BrickField brickField;
     [SerializeField] private Hud hud;
+    [SerializeField] private ItemController itemController;
 
     private GameSession session;
     private HighScoreStore highScoreStore;
@@ -16,6 +18,8 @@ public class GameController : MonoBehaviour
     public GameState State { get; private set; }
     public int Score => session.Score;
     public int Lives => session.Lives;
+
+    private bool HasMultipleBalls => false;
 
     private void OnEnable()
     {
@@ -37,7 +41,7 @@ public class GameController : MonoBehaviour
         }
 
         session = new GameSession(gameConfig.startingLives, savedHighScore);
-        hud.CreateLifeIcons(session.ReserveLives);
+        hud.CreateLifeIcons(itemConfig.maxReserveLives);
         RefreshHud();
         EnterReady();
     }
@@ -61,9 +65,18 @@ public class GameController : MonoBehaviour
             case GameState.Playing:
                 paddle.Step(deltaTime);
                 bool reachedDeadZone = ball.Step(deltaTime);
-                if (reachedDeadZone && State == GameState.Playing)
+                if (State != GameState.Playing)
+                {
+                    break;
+                }
+                if (reachedDeadZone)
                 {
                     HandleMiss();
+                    break;
+                }
+                if (itemController.Step(deltaTime, paddle.Area, out ItemType caughtType))
+                {
+                    ApplyItem(caughtType);
                 }
                 break;
             case GameState.Clear:
@@ -85,11 +98,24 @@ public class GameController : MonoBehaviour
         if (GameSession.IsStageCleared(brickField.RemainingCount))
         {
             EnterEnd(GameState.Clear, gameConfig.clearMessage);
+            return;
+        }
+
+        itemController.TryDrop(brick.transform.position, brick.CanDropItem, HasMultipleBalls);
+    }
+
+    private void ApplyItem(ItemType itemType)
+    {
+        if (itemType == ItemType.Player)
+        {
+            session.AddLife(itemConfig.maxReserveLives);
+            RefreshHud();
         }
     }
 
     private void HandleMiss()
     {
+        itemController.ClearAll();
         session.LoseLife();
         RefreshHud();
 

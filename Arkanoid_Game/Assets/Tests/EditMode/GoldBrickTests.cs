@@ -123,4 +123,22 @@ public class GoldBrickTests
         Assert.AreEqual(0, session.Score);
         Assert.AreEqual(6f, verticalSpeed);
     }
+
+    [Test]
+    public void BrickSetup_CanDropItem_OnlyNormalColorBricks()
+    {
+        Assert.IsFalse(BrickSetup.FromRow(config.brickRows[0], config).CanDropItem, "silver");
+        for (int row = 1; row < config.brickRows.Length; row++)
+        {
+            Assert.IsTrue(BrickSetup.FromRow(config.brickRows[row], config).CanDropItem, $"row {row}");
+        }
+        Assert.IsFalse(BrickSetup.Gold(config).CanDropItem, "gold");
+    }
+
+    [Test]
+    public void Brick_Init_CopiesCanDropItemFromSetup()
+    {
+        Assert.IsTrue(CreateBrick(BrickSetup.FromRow(config.brickRows[5], config)).CanDropItem);
+        Assert.IsFalse(CreateBrick(BrickSetup.Gold(config)).CanDropItem);
+    }
 }

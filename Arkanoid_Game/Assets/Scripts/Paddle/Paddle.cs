@@ -16,6 +16,8 @@ public class Paddle : MonoBehaviour
         visual.transform.localScale = SpriteFitting.ScaleToFit(visual.sprite.bounds.size, paddleConfig.Size);
     }
 
+    public Rect Area => WorldRect.FromCenter(transform.position, body.size);
+
     public Vector3 BallRestPosition(float ballRadius)
     {
         return transform.position + Vector3.up * (paddleConfig.HalfHeight + ballRadius);

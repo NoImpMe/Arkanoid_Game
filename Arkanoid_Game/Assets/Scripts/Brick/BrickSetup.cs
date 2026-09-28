@@ -8,6 +8,7 @@ public readonly struct BrickSetup
     public int Score { get; }
     public bool IsIndestructible { get; }
     public int HitsToDestroy { get; }
+    public bool CanDropItem => !IsIndestructible && HitsToDestroy == 1;
 
     private BrickSetup(Sprite sprite, Color tint, Color hitFlashColor, int score, bool isIndestructible, int hitsToDestroy)
     {

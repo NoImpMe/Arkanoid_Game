@@ -69,4 +69,29 @@ public class GameSessionTests
     {
         Assert.AreEqual(expected, GameSession.IsStageCleared(remainingBricks));
     }
+
+    [Test]
+    public void AddLife_BelowMax_IncreasesLivesAndReserve()
+    {
+        GameSession session = new GameSession(3, 0);
+
+        session.AddLife(5);
+
+        Assert.AreEqual(4, session.Lives);
+        Assert.AreEqual(3, session.ReserveLives);
+    }
+
+    [Test]
+    public void AddLife_AtMaxReserve_StaysAtMax()
+    {
+        GameSession session = new GameSession(3, 0);
+
+        for (int pickup = 0; pickup < 10; pickup++)
+        {
+            session.AddLife(5);
+        }
+
+        Assert.AreEqual(6, session.Lives);
+        Assert.AreEqual(5, session.ReserveLives);
+    }
 }

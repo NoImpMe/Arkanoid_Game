@@ -15,12 +15,14 @@ public class Brick : MonoBehaviour
 
     public int Score { get; private set; }
     public bool IsIndestructible => durability.IsIndestructible;
+    public bool CanDropItem { get; private set; }
 
     public void Init(BrickSetup setup, StageConfig config, Vector2 center)
     {
         stageConfig = config;
         durability = setup.CreateDurability();
         Score = setup.Score;
+        CanDropItem = setup.CanDropItem;
         baseColor = setup.Tint;
         hitFlashColor = setup.HitFlashColor;
 
