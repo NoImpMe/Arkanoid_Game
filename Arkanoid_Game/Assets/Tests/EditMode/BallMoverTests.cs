@@ -284,6 +284,25 @@ public class BallMoverTests
     }
 
     [Test]
+    public void Move_TwoBallsSameBrickSameFrame_OnlyFirstBallReportsIt()
+    {
+        CreateBox("Brick", new Vector2(0f, 2f), new Vector2(1f, 0.5f));
+        List<Collider> firstBallHits = new List<Collider>();
+        List<Collider> secondBallHits = new List<Collider>();
+
+        mover.Move(Vector3.zero, new Vector2(0f, 6f), 0.5f, hitBrick =>
+        {
+            firstBallHits.Add(hitBrick);
+            hitBrick.enabled = false;
+        });
+        BallMoveResult secondResult = mover.Move(new Vector3(0.2f, 0f, 0f), new Vector2(0f, 6f), 0.5f, secondBallHits.Add);
+
+        Assert.AreEqual(1, firstBallHits.Count);
+        Assert.AreEqual(0, secondBallHits.Count);
+        Assert.AreEqual(6f, secondResult.Velocity.y, Tolerance);
+    }
+
+    [Test]
     public void Move_CatchAtMaxSpeed_DoesNotTunnelThroughPaddle()
     {
         CreateBox("Paddle", new Vector2(0f, -8.35f), new Vector2(2f, 0.5f));

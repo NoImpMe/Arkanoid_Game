@@ -33,4 +33,8 @@ public class ItemConfig : ScriptableObject
 
     [Header("Catch")]
     public float catchAutoReleaseSeconds = 2f;
+
+    [Header("Disruption")]
+    public int disruptionBallCount = 3;
+    public float disruptionSpreadDegrees = 15f;
 }

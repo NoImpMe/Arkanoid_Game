@@ -47,3 +47,5 @@ MonoBehaviour:
   slowVerticalSpeed: 4
   enlargeWidthMultiplier: 1.5
   catchAutoReleaseSeconds: 2
+  disruptionBallCount: 3
+  disruptionSpreadDegrees: 15

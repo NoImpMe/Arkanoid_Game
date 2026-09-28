@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private Hud hud;
     [SerializeField] private ItemController itemController;
 
+    private readonly List<Ball> balls = new List<Ball>();
     private GameSession session;
     private HighScoreStore highScoreStore;
     private PaddleMode paddleMode;
@@ -19,17 +21,34 @@ public class GameController : MonoBehaviour
     public GameState State { get; private set; }
     public int Score => session.Score;
     public int Lives => session.Lives;
+    public int ActiveBallCount => CountActiveBalls();
 
-    private bool HasMultipleBalls => false;
+    private void Awake()
+    {
+        balls.Add(ball);
+        for (int index = 1; index < itemConfig.disruptionBallCount; index++)
+        {
+            Ball extraBall = Instantiate(ball, ball.transform.parent);
+            extraBall.name = $"{ball.name} ({index})";
+            extraBall.gameObject.SetActive(false);
+            balls.Add(extraBall);
+        }
+    }
 
     private void OnEnable()
     {
-        ball.BrickDestroyed += HandleBrickDestroyed;
+        foreach (Ball eachBall in balls)
+        {
+            eachBall.BrickDestroyed += HandleBrickDestroyed;
+        }
     }
 
     private void OnDisable()
     {
-        ball.BrickDestroyed -= HandleBrickDestroyed;
+        foreach (Ball eachBall in balls)
+        {
+            eachBall.BrickDestroyed -= HandleBrickDestroyed;
+        }
     }
 
     private void Start()
@@ -65,26 +84,15 @@ public class GameController : MonoBehaviour
                 break;
             case GameState.Playing:
                 paddle.Step(deltaTime);
-                if (ball.IsHeld)
+                StepBalls(deltaTime);
+                if (State != GameState.Playing)
                 {
-                    UpdateHeldBall(deltaTime);
+                    break;
                 }
-                else
+                if (DisruptionSplit.ShouldLoseLife(ActiveBallCount))
                 {
-                    BallMoveResult moveResult = ball.Step(deltaTime, paddleMode == PaddleMode.Catch);
-                    if (State != GameState.Playing)
-                    {
-                        break;
-                    }
-                    if (moveResult.ReachedDeadZone)
-                    {
-                        HandleMiss();
-                        break;
-                    }
-                    if (moveResult.CaughtByPaddle)
-                    {
-                        ball.StartHold(paddle, itemConfig.catchAutoReleaseSeconds);
-                    }
+                    HandleMiss();
+                    break;
                 }
                 if (itemController.Step(deltaTime, paddle.Area, out ItemType caughtType))
                 {
@@ -101,12 +109,39 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void UpdateHeldBall(float deltaTime)
+    private void StepBalls(float deltaTime)
     {
-        bool autoRelease = ball.TickHold(paddle, deltaTime);
-        if (autoRelease || IsKeyPressed(Key.Space))
+        bool releasePressed = IsKeyPressed(Key.Space);
+        foreach (Ball eachBall in balls)
         {
-            ball.ReleaseFromPaddle(paddle);
+            if (!eachBall.gameObject.activeSelf)
+            {
+                continue;
+            }
+
+            if (eachBall.IsHeld)
+            {
+                bool autoRelease = eachBall.TickHold(paddle, deltaTime);
+                if (autoRelease || releasePressed)
+                {
+                    eachBall.ReleaseFromPaddle(paddle);
+                }
+                continue;
+            }
+
+            BallMoveResult moveResult = eachBall.Step(deltaTime, paddleMode == PaddleMode.Catch);
+            if (State != GameState.Playing)
+            {
+                return;
+            }
+            if (moveResult.ReachedDeadZone)
+            {
+                eachBall.gameObject.SetActive(false);
+            }
+            else if (moveResult.CaughtByPaddle)
+            {
+                eachBall.StartHold(paddle, itemConfig.catchAutoReleaseSeconds);
+            }
         }
     }
 
@@ -122,7 +157,7 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        itemController.TryDrop(brick.transform.position, brick.CanDropItem, HasMultipleBalls);
+        itemController.TryDrop(brick.transform.position, brick.CanDropItem, DisruptionSplit.HasMultipleBalls(ActiveBallCount));
     }
 
     private void ApplyItem(ItemType itemType)
@@ -134,11 +169,76 @@ public class GameController : MonoBehaviour
                 RefreshHud();
                 break;
             case ItemType.Slow:
-                ball.SlowDown(itemConfig.slowVerticalSpeed);
+                foreach (Ball eachBall in balls)
+                {
+                    if (eachBall.gameObject.activeSelf)
+                    {
+                        eachBall.SlowDown(itemConfig.slowVerticalSpeed);
+                    }
+                }
+                break;
+            case ItemType.Disruption:
+                SplitBall();
                 break;
         }
 
         SetPaddleMode(PaddleModeRule.AfterPickup(paddleMode, itemType));
+    }
+
+    private void SplitBall()
+    {
+        Ball sourceBall = FindActiveBall();
+        if (sourceBall == null)
+        {
+            return;
+        }
+
+        if (sourceBall.IsHeld)
+        {
+            sourceBall.ReleaseFromPaddle(paddle);
+        }
+
+        float spread = itemConfig.disruptionSpreadDegrees;
+        LaunchExtraBall(sourceBall, DisruptionSplit.Rotated(sourceBall.Velocity, -spread, sourceBall.MaxBounceAngleDegrees));
+        LaunchExtraBall(sourceBall, DisruptionSplit.Rotated(sourceBall.Velocity, spread, sourceBall.MaxBounceAngleDegrees));
+    }
+
+    private void LaunchExtraBall(Ball sourceBall, Vector2 velocity)
+    {
+        foreach (Ball eachBall in balls)
+        {
+            if (!eachBall.gameObject.activeSelf)
+            {
+                eachBall.gameObject.SetActive(true);
+                eachBall.LaunchFrom(sourceBall.transform.position, sourceBall.VerticalSpeed, velocity);
+                return;
+            }
+        }
+    }
+
+    private Ball FindActiveBall()
+    {
+        foreach (Ball eachBall in balls)
+        {
+            if (eachBall.gameObject.activeSelf)
+            {
+                return eachBall;
+            }
+        }
+        return null;
+    }
+
+    private int CountActiveBalls()
+    {
+        int count = 0;
+        foreach (Ball eachBall in balls)
+        {
+            if (eachBall.gameObject.activeSelf)
+            {
+                count++;
+            }
+        }
+        return count;
     }
 
     private void SetPaddleMode(PaddleMode mode)
@@ -165,6 +265,10 @@ public class GameController : MonoBehaviour
     private void EnterReady()
     {
         State = GameState.Ready;
+        foreach (Ball eachBall in balls)
+        {
+            eachBall.gameObject.SetActive(eachBall == ball);
+        }
         ball.PlaceAt(paddle.BallRestPosition(ball.Radius));
         hud.ShowMessage(gameConfig.readyMessage);
     }
@@ -172,7 +276,10 @@ public class GameController : MonoBehaviour
     private void EnterEnd(GameState endState, string message)
     {
         State = endState;
-        ball.PlaceAt(ball.transform.position);
+        foreach (Ball eachBall in balls)
+        {
+            eachBall.PlaceAt(eachBall.transform.position);
+        }
         hud.ShowMessage($"{message}\n\n{gameConfig.restartHint}");
         LayoutSession.MarkGameFinished();
         SaveHighScore();

@@ -16,6 +16,7 @@ public class Ball : MonoBehaviour
     public float VerticalSpeed { get; private set; }
     public float Radius => ballConfig.radius;
     public bool IsHeld => hold.IsHolding;
+    public float MaxBounceAngleDegrees => ballConfig.maxBounceAngleDegrees;
 
     private void Awake()
     {
@@ -36,6 +37,14 @@ public class Ball : MonoBehaviour
         hold.Stop();
         VerticalSpeed = ballConfig.initialVerticalSpeed;
         Velocity = BallBounce.VelocityFromAngle(VerticalSpeed, ballConfig.launchAngleDegrees);
+    }
+
+    public void LaunchFrom(Vector3 position, float verticalSpeed, Vector2 velocity)
+    {
+        hold.Stop();
+        transform.position = position;
+        VerticalSpeed = verticalSpeed;
+        Velocity = velocity;
     }
 
     public void SlowDown(float slowVerticalSpeed)
