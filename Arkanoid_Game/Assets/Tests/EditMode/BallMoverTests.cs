@@ -209,4 +209,16 @@ public class BallMoverTests
 
         Assert.IsTrue(result.ReachedDeadZone);
     }
+
+    [Test]
+    public void Move_OntoEnlargedPaddle_OffsetUsesCurrentWidth()
+    {
+        CreateBox("Paddle", new Vector2(0f, -8.35f), new Vector2(3f, 0.5f));
+
+        BallMoveResult result = mover.Move(new Vector3(1f, -7f, 0f), new Vector2(0f, -6f), 0.5f);
+
+        float expectedAngle = (1f / 1.5f) * MaxBounceAngle;
+        Assert.AreEqual(6f, result.Velocity.y, Tolerance);
+        Assert.AreEqual(6f * Mathf.Tan(expectedAngle * Mathf.Deg2Rad), result.Velocity.x, Tolerance);
+    }
 }

@@ -34,6 +34,12 @@ public class Ball : MonoBehaviour
         Velocity = BallBounce.VelocityFromAngle(VerticalSpeed, ballConfig.launchAngleDegrees);
     }
 
+    public void SlowDown(float slowVerticalSpeed)
+    {
+        VerticalSpeed = BallSpeed.Slowed(VerticalSpeed, slowVerticalSpeed);
+        Velocity = BallSpeed.WithVerticalSpeed(Velocity, VerticalSpeed);
+    }
+
     public bool Step(float deltaTime)
     {
         Physics.SyncTransforms();

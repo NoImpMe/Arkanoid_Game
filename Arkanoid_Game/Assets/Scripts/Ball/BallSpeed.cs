@@ -7,6 +7,11 @@ public static class BallSpeed
         return Mathf.Min(verticalSpeed + increment, maxVerticalSpeed);
     }
 
+    public static float Slowed(float verticalSpeed, float slowVerticalSpeed)
+    {
+        return Mathf.Min(verticalSpeed, slowVerticalSpeed);
+    }
+
     public static Vector2 WithVerticalSpeed(Vector2 velocity, float verticalSpeed)
     {
         float currentVerticalSpeed = Mathf.Abs(velocity.y);

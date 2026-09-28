@@ -10,8 +10,6 @@ public class PaddleConfig : ScriptableObject
 
     [Header("Movement")]
     public float moveSpeed = 12f;
-    public float minX = -5.5f;
-    public float maxX = 5.5f;
 
     public Vector2 Size => new Vector2(width, height);
     public float HalfHeight => height * 0.5f;

@@ -20,4 +20,15 @@ public static class PaddleMovement
     {
         return Mathf.Clamp(currentX + direction * speed * deltaTime, minX, maxX);
     }
+
+    public static Vector2 MovementRange(float playAreaLeft, float playAreaRight, float paddleWidth)
+    {
+        float halfWidth = paddleWidth * 0.5f;
+        return new Vector2(playAreaLeft + halfWidth, playAreaRight - halfWidth);
+    }
+
+    public static float ClampToRange(float x, Vector2 movementRange)
+    {
+        return Mathf.Clamp(x, movementRange.x, movementRange.y);
+    }
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1eb586ff798142408ed6cadcbe0069c, type: 3}
   m_Name: ItemConfig
   m_EditorClassIdentifier: Arkanoid::ItemConfig
-  dropChance: 0.2
+  dropChance: 0.8
   items:
   - type: 0
     letter: L
@@ -44,3 +44,5 @@ MonoBehaviour:
   letterFontSize: 3
   letterColor: {r: 1, g: 1, b: 1, a: 1}
   maxReserveLives: 5
+  slowVerticalSpeed: 4
+  enlargeWidthMultiplier: 1.5

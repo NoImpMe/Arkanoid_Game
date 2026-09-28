@@ -8,15 +8,30 @@ public class Paddle : MonoBehaviour
     [SerializeField] private BoxCollider body;
     [SerializeField] private SpriteRenderer visual;
 
+    private Vector2 movementRange;
+
+    public float NormalWidth => paddleConfig.width;
+    public float Width { get; private set; }
+    public Rect Area => WorldRect.FromCenter(transform.position, body.size);
+
     private void Awake()
     {
         transform.position = Vector3.up * paddleConfig.positionY;
         body.center = Vector3.zero;
-        body.size = new Vector3(paddleConfig.width, paddleConfig.height, stageConfig.colliderDepth);
-        visual.transform.localScale = SpriteFitting.ScaleToFit(visual.sprite.bounds.size, paddleConfig.Size);
+        SetWidth(paddleConfig.width);
     }
 
-    public Rect Area => WorldRect.FromCenter(transform.position, body.size);
+    public void SetWidth(float width)
+    {
+        Width = width;
+        body.size = new Vector3(width, paddleConfig.height, stageConfig.colliderDepth);
+        visual.transform.localScale = SpriteFitting.ScaleToFit(visual.sprite.bounds.size, new Vector2(width, paddleConfig.height));
+        movementRange = PaddleMovement.MovementRange(stageConfig.playAreaLeft, stageConfig.playAreaRight, width);
+
+        Vector3 position = transform.position;
+        position.x = PaddleMovement.ClampToRange(position.x, movementRange);
+        transform.position = position;
+    }
 
     public Vector3 BallRestPosition(float ballRadius)
     {
@@ -27,7 +42,7 @@ public class Paddle : MonoBehaviour
     {
         Vector3 position = transform.position;
         position.x = PaddleMovement.NextX(position.x, ReadInputDirection(), paddleConfig.moveSpeed, deltaTime,
-            paddleConfig.minX, paddleConfig.maxX);
+            movementRange.x, movementRange.y);
         transform.position = position;
     }
 

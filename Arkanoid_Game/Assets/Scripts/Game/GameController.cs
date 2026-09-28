@@ -14,6 +14,7 @@ public class GameController : MonoBehaviour
 
     private GameSession session;
     private HighScoreStore highScoreStore;
+    private PaddleMode paddleMode;
 
     public GameState State { get; private set; }
     public int Score => session.Score;
@@ -106,16 +107,30 @@ public class GameController : MonoBehaviour
 
     private void ApplyItem(ItemType itemType)
     {
-        if (itemType == ItemType.Player)
+        switch (itemType)
         {
-            session.AddLife(itemConfig.maxReserveLives);
-            RefreshHud();
+            case ItemType.Player:
+                session.AddLife(itemConfig.maxReserveLives);
+                RefreshHud();
+                break;
+            case ItemType.Slow:
+                ball.SlowDown(itemConfig.slowVerticalSpeed);
+                break;
         }
+
+        SetPaddleMode(PaddleModeRule.AfterPickup(paddleMode, itemType));
+    }
+
+    private void SetPaddleMode(PaddleMode mode)
+    {
+        paddleMode = mode;
+        paddle.SetWidth(PaddleModeRule.WidthFor(mode, paddle.NormalWidth, itemConfig.enlargeWidthMultiplier));
     }
 
     private void HandleMiss()
     {
         itemController.ClearAll();
+        SetPaddleMode(PaddleMode.None);
         session.LoseLife();
         RefreshHud();
 

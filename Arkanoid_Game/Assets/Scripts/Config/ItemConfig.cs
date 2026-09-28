@@ -24,4 +24,10 @@ public class ItemConfig : ScriptableObject
 
     [Header("Player")]
     public int maxReserveLives = 5;
+
+    [Header("Slow")]
+    public float slowVerticalSpeed = 4f;
+
+    [Header("Enlarge")]
+    public float enlargeWidthMultiplier = 1.5f;
 }

@@ -16,5 +16,3 @@ MonoBehaviour:
   height: 0.5
   positionY: -8.35
   moveSpeed: 12
-  minX: -5.5
-  maxX: 5.5

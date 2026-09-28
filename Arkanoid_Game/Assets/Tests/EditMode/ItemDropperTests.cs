@@ -121,4 +121,11 @@ public class ItemDropperTests
             Assert.AreSame(firstItem, secondItem);
         }
     }
+
+    [Test]
+    public void DefaultConfig_SlowAndEnlargeValuesMatchSpec()
+    {
+        Assert.AreEqual(4f, config.slowVerticalSpeed, 1e-6f);
+        Assert.AreEqual(1.5f, config.enlargeWidthMultiplier, 1e-6f);
+    }
 }
