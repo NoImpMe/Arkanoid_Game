@@ -16,6 +16,7 @@ public static class SessionHighScore
         hasValue = true;
     }
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     public static void Clear()
     {
         hasValue = false;
