@@ -16,7 +16,7 @@ MonoBehaviour:
   cameraPosition: {x: 0, y: 0, z: -10}
   playAreaLeft: -6.5
   playAreaRight: 6.5
-  playAreaTop: 8.1
+  playAreaTop: 9.07
   deadZoneY: -9.6
   wallThickness: 0.5
   colliderDepth: 1

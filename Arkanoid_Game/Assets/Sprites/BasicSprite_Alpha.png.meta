@@ -1,0 +1,447 @@
+fileFormatVersion: 2
+guid: c2197fec08247f149926565c674404ac
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4158449362660587678
+    second: BasicSprite_Alpha_0
+  - first:
+      213: 2450357058082936645
+    second: BasicSprite_Alpha_1
+  - first:
+      213: -7961864005875540603
+    second: BasicSprite_Alpha_2
+  - first:
+      213: -6491079594384523933
+    second: BasicSprite_Alpha_3
+  - first:
+      213: 770709030294437480
+    second: BasicSprite_Alpha_4
+  - first:
+      213: 4655462686933218898
+    second: BasicSprite_Alpha_5
+  - first:
+      213: -2881735352070596780
+    second: BasicSprite_Alpha_6
+  - first:
+      213: -4885017356652329648
+    second: BasicSprite_Alpha_7
+  - first:
+      213: 459882588657198277
+    second: BasicSprite_Alpha_8
+  - first:
+      213: 9214954179718255609
+    second: BasicSprite_Alpha_9
+  - first:
+      213: 7124641162131633827
+    second: BasicSprite_Alpha_10
+  - first:
+      213: -1760322611271917073
+    second: BasicSprite_Alpha_11
+  - first:
+      213: -1671784677725345434
+    second: BasicSprite_Alpha_12
+  - first:
+      213: 4653981384356408055
+    second: BasicSprite_Alpha_13
+  - first:
+      213: -7481738649897958219
+    second: BasicSprite_Alpha_14
+  - first:
+      213: -6696037593325416268
+    second: BasicSprite_Alpha_15
+  - first:
+      213: -6202298181213383493
+    second: BasicSprite_Alpha_16
+  - first:
+      213: 5284028763125624007
+    second: BasicSprite_Alpha_17
+  - first:
+      213: 3875689789537972233
+    second: BasicSprite_Alpha_18
+  - first:
+      213: 5935155577243471415
+    second: BasicSprite_Alpha_19
+  - first:
+      213: -8204714855850978470
+    second: BasicSprite_Alpha_20
+  - first:
+      213: -7617394391083319937
+    second: BasicSprite_Alpha_21
+  - first:
+      213: 8847945162115944987
+    second: BasicSprite_Alpha_22
+  - first:
+      213: -7306120761020948129
+    second: BasicSprite_Alpha_23
+  - first:
+      213: -5938461017186566987
+    second: BasicSprite_Alpha_24
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Paddle
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 973
+        width: 206
+        height: 65
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 48da7b31d8ab73b47afdd6507ef4404e
+      internalID: 342560573
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ball
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 783
+        width: 108
+        height: 108
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c12948ca3ba95994e86e2337a3216275
+      internalID: -247410685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brick_Red
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 268
+        width: 104
+        height: 104
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41c1466d9aac48049968b815db6e7fd7
+      internalID: 750809901
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brick_Orange
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 268
+        width: 105
+        height: 104
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7946f1d18a665d348a67bee3a56a7872
+      internalID: 1346070681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brick_Yellow
+      rect:
+        serializedVersion: 2
+        x: 295
+        y: 268
+        width: 105
+        height: 104
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d5cef106bfabbd7428c0985ef56070ae
+      internalID: -1550897113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brick_Green
+      rect:
+        serializedVersion: 2
+        x: 428
+        y: 268
+        width: 104
+        height: 104
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1f2cc8d5d79577848a4286d6508e1378
+      internalID: -1636843443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brick_Blue
+      rect:
+        serializedVersion: 2
+        x: 560
+        y: 268
+        width: 105
+        height: 104
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9c10824cfd5ea934fa79f73813bcba08
+      internalID: -1701707560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brick_Magenta
+      rect:
+        serializedVersion: 2
+        x: 685
+        y: 268
+        width: 105
+        height: 104
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dbb096a6661a68c4c8768e0297c85b49
+      internalID: -1558887798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brick_Silver
+      rect:
+        serializedVersion: 2
+        x: 822
+        y: 268
+        width: 104
+        height: 104
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 397686e1a35f2e0428c21afc5318fe03
+      internalID: 906437850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LifeIcon
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 109
+        width: 108
+        height: 57
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 25da0df38d8941f45872f906bdebda91
+      internalID: 1694949336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 36f2805d3088455449e67bb1b60bdf9f
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Ball: -247410685
+      BasicSprite_Alpha_0: -4158449362660587678
+      BasicSprite_Alpha_1: 2450357058082936645
+      BasicSprite_Alpha_10: 7124641162131633827
+      BasicSprite_Alpha_11: -1760322611271917073
+      BasicSprite_Alpha_12: -1671784677725345434
+      BasicSprite_Alpha_13: 4653981384356408055
+      BasicSprite_Alpha_14: -7481738649897958219
+      BasicSprite_Alpha_15: -6696037593325416268
+      BasicSprite_Alpha_16: -6202298181213383493
+      BasicSprite_Alpha_17: 5284028763125624007
+      BasicSprite_Alpha_18: 3875689789537972233
+      BasicSprite_Alpha_19: 5935155577243471415
+      BasicSprite_Alpha_2: -7961864005875540603
+      BasicSprite_Alpha_20: -8204714855850978470
+      BasicSprite_Alpha_21: -7617394391083319937
+      BasicSprite_Alpha_22: 8847945162115944987
+      BasicSprite_Alpha_23: -7306120761020948129
+      BasicSprite_Alpha_24: -5938461017186566987
+      BasicSprite_Alpha_3: -6491079594384523933
+      BasicSprite_Alpha_4: 770709030294437480
+      BasicSprite_Alpha_5: 4655462686933218898
+      BasicSprite_Alpha_6: -2881735352070596780
+      BasicSprite_Alpha_7: -4885017356652329648
+      BasicSprite_Alpha_8: 459882588657198277
+      BasicSprite_Alpha_9: 9214954179718255609
+      Brick_Blue: -1701707560
+      Brick_Green: -1636843443
+      Brick_Magenta: -1558887798
+      Brick_Orange: 1346070681
+      Brick_Red: 750809901
+      Brick_Silver: 906437850
+      Brick_Yellow: -1550897113
+      LifeIcon: 1694949336
+      Paddle: 342560573
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -7,7 +7,7 @@ public class PlayFieldLayoutTests
 
     private PlayFieldLayout CreateSpecLayout()
     {
-        return new PlayFieldLayout(-6.5f, 6.5f, 8.1f, -9.6f, 0.5f);
+        return new PlayFieldLayout(-6.5f, 6.5f, 9.07f, -9.6f, 0.5f);
     }
 
     [Test]
@@ -27,8 +27,8 @@ public class PlayFieldLayoutTests
     {
         PlayFieldLayout layout = CreateSpecLayout();
 
-        Assert.AreEqual(8.1f, layout.TopWall.yMin, Tolerance);
-        Assert.AreEqual(8.35f, layout.TopWall.center.y, Tolerance);
+        Assert.AreEqual(9.07f, layout.TopWall.yMin, Tolerance);
+        Assert.AreEqual(9.32f, layout.TopWall.center.y, Tolerance);
         Assert.AreEqual(layout.LeftWall.xMin, layout.TopWall.xMin, Tolerance);
         Assert.AreEqual(layout.RightWall.xMax, layout.TopWall.xMax, Tolerance);
     }

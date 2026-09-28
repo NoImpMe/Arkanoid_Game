@@ -10,7 +10,7 @@ public class StageConfig : ScriptableObject
     [Header("Play Area")]
     public float playAreaLeft = -6.5f;
     public float playAreaRight = 6.5f;
-    public float playAreaTop = 8.1f;
+    public float playAreaTop = 9.07f;
     public float deadZoneY = -9.6f;
     public float wallThickness = 0.5f;
     public float colliderDepth = 1f;
