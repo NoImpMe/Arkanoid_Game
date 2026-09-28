@@ -5,8 +5,20 @@ public class GameController : MonoBehaviour
 {
     [SerializeField] private Paddle paddle;
     [SerializeField] private Ball ball;
+    [SerializeField] private BrickField brickField;
 
     public GameState State { get; private set; }
+    public int Score { get; private set; }
+
+    private void OnEnable()
+    {
+        ball.BrickDestroyed += HandleBrickDestroyed;
+    }
+
+    private void OnDisable()
+    {
+        ball.BrickDestroyed -= HandleBrickDestroyed;
+    }
 
     private void Start()
     {
@@ -35,6 +47,12 @@ public class GameController : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    private void HandleBrickDestroyed(Brick brick)
+    {
+        Score += brick.Score;
+        brickField.NotifyBrickDestroyed();
     }
 
     private void EnterReady()

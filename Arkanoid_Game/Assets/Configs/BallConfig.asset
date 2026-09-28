@@ -16,6 +16,8 @@ MonoBehaviour:
   initialVerticalSpeed: 6
   launchAngleDegrees: 30
   maxBounceAngleDegrees: 60
+  verticalSpeedIncreasePerBrick: 0.05
+  maxVerticalSpeed: 9
   skinWidth: 0.01
   maxCollisionIterations: 4
   collisionLayers:
@@ -24,6 +26,9 @@ MonoBehaviour:
   paddleLayers:
     serializedVersion: 2
     m_Bits: 128
+  brickLayers:
+    serializedVersion: 2
+    m_Bits: 256
   deadZoneLayers:
     serializedVersion: 2
     m_Bits: 512

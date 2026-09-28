@@ -20,3 +20,29 @@ MonoBehaviour:
   deadZoneY: -9.6
   wallThickness: 0.5
   colliderDepth: 1
+  brickColumns: 13
+  brickSize: {x: 1, y: 0.5}
+  gapBelowTopWall: 2
+  brickRows:
+  - sprite: {fileID: 906437850, guid: c2197fec08247f149926565c674404ac, type: 3}
+    durability: 2
+    score: 50
+  - sprite: {fileID: 750809901, guid: c2197fec08247f149926565c674404ac, type: 3}
+    durability: 1
+    score: 90
+  - sprite: {fileID: -1550897113, guid: c2197fec08247f149926565c674404ac, type: 3}
+    durability: 1
+    score: 120
+  - sprite: {fileID: -1701707560, guid: c2197fec08247f149926565c674404ac, type: 3}
+    durability: 1
+    score: 100
+  - sprite: {fileID: -1558887798, guid: c2197fec08247f149926565c674404ac, type: 3}
+    durability: 1
+    score: 110
+  - sprite: {fileID: -1636843443, guid: c2197fec08247f149926565c674404ac, type: 3}
+    durability: 1
+    score: 80
+  brickShadowOffset: {x: 0.25, y: -0.25}
+  brickShadowColor: {r: 0, g: 0, b: 0, a: 0.5}
+  hitFlashDuration: 0.15
+  hitFlashColor: {r: 1, g: 0.85, b: 0.4, a: 1}

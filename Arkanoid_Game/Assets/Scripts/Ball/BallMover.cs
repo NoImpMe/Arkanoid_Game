@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class BallMover
@@ -8,11 +9,12 @@ public class BallMover
     private readonly float maxBounceAngleDegrees;
     private readonly int collisionMask;
     private readonly int paddleMask;
+    private readonly int brickMask;
     private readonly int deadZoneMask;
     private readonly Collider[] overlapBuffer = new Collider[1];
 
     public BallMover(float radius, float skinWidth, int maxIterations, float maxBounceAngleDegrees,
-        int collisionMask, int paddleMask, int deadZoneMask)
+        int collisionMask, int paddleMask, int brickMask, int deadZoneMask)
     {
         this.radius = radius;
         this.skinWidth = skinWidth;
@@ -20,6 +22,7 @@ public class BallMover
         this.maxBounceAngleDegrees = maxBounceAngleDegrees;
         this.collisionMask = collisionMask;
         this.paddleMask = paddleMask;
+        this.brickMask = brickMask;
         this.deadZoneMask = deadZoneMask;
     }
 
@@ -32,10 +35,11 @@ public class BallMover
             config.maxBounceAngleDegrees,
             config.collisionLayers,
             config.paddleLayers,
+            config.brickLayers,
             config.deadZoneLayers);
     }
 
-    public BallMoveResult Move(Vector3 position, Vector2 velocity, float deltaTime)
+    public BallMoveResult Move(Vector3 position, Vector2 velocity, float deltaTime, Action<Collider> onBrickHit = null)
     {
         if (velocity.y < 0f && TryFindOverlappingPaddle(position, out Collider overlappedPaddle))
         {
@@ -67,9 +71,17 @@ public class BallMover
                 return new BallMoveResult(position, velocity, true);
             }
 
-            velocity = IsInMask(hit.collider, paddleMask)
-                ? BounceOffPaddle(hit.collider, position, velocity)
-                : BallBounce.ReflectByNormalAxis(velocity, hit.normal);
+            if (IsInMask(hit.collider, paddleMask))
+            {
+                velocity = BounceOffPaddle(hit.collider, position, velocity);
+                continue;
+            }
+
+            velocity = BallBounce.ReflectByNormalAxis(velocity, hit.normal);
+            if (IsInMask(hit.collider, brickMask))
+            {
+                onBrickHit?.Invoke(hit.collider);
+            }
         }
 
         return new BallMoveResult(position, velocity, false);

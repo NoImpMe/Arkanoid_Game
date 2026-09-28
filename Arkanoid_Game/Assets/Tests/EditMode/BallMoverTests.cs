@@ -19,7 +19,7 @@ public class BallMoverTests
     {
         int collisionMask = LayerMask.GetMask("Wall", "Paddle", "Brick", "DeadZone");
         mover = new BallMover(Radius, Skin, MaxIterations, MaxBounceAngle, collisionMask,
-            LayerMask.GetMask("Paddle"), LayerMask.GetMask("DeadZone"));
+            LayerMask.GetMask("Paddle"), LayerMask.GetMask("Brick"), LayerMask.GetMask("DeadZone"));
     }
 
     [TearDown]
@@ -149,6 +149,55 @@ public class BallMoverTests
 
         Assert.Greater(result.Velocity.y, 0f);
         Assert.GreaterOrEqual(result.Position.y - Radius, -8.1f);
+    }
+
+    [Test]
+    public void Move_IntoBrick_ReportsThatBrickOnce()
+    {
+        BoxCollider brick = CreateBox("Brick", new Vector2(0f, 2f), new Vector2(1f, 0.5f));
+        List<Collider> hitBricks = new List<Collider>();
+
+        mover.Move(Vector3.zero, new Vector2(0f, 6f), 0.5f, hitBricks.Add);
+
+        Assert.AreEqual(1, hitBricks.Count);
+        Assert.AreSame(brick, hitBricks[0]);
+    }
+
+    [Test]
+    public void Move_OnBoundaryOfTwoAdjacentBricks_ReportsOnlyOneBrick()
+    {
+        CreateBox("Brick", new Vector2(-0.5f, 2f), new Vector2(1f, 0.5f));
+        CreateBox("Brick", new Vector2(0.5f, 2f), new Vector2(1f, 0.5f));
+        List<Collider> hitBricks = new List<Collider>();
+
+        BallMoveResult result = mover.Move(Vector3.zero, new Vector2(0f, 6f), 0.5f, hitBricks.Add);
+
+        Assert.AreEqual(1, hitBricks.Count);
+        Assert.Less(result.Velocity.y, 0f);
+    }
+
+    [Test]
+    public void Move_WallHit_DoesNotReportBrick()
+    {
+        CreateBox("Wall", new Vector2(0f, 2f), new Vector2(4f, 0.5f));
+        List<Collider> hitBricks = new List<Collider>();
+
+        mover.Move(Vector3.zero, new Vector2(0f, 6f), 0.5f, hitBricks.Add);
+
+        Assert.AreEqual(0, hitBricks.Count);
+    }
+
+    [Test]
+    public void Move_AfterBrickColliderDisabled_PassesThroughWithoutSync()
+    {
+        BoxCollider brick = CreateBox("Brick", new Vector2(0f, 2f), new Vector2(1f, 0.5f));
+        mover.Move(Vector3.zero, new Vector2(0f, 6f), 0.5f, hitCollider => hitCollider.enabled = false);
+
+        BallMoveResult secondPass = mover.Move(Vector3.zero, new Vector2(0f, 6f), 0.5f);
+
+        Assert.IsFalse(brick.enabled);
+        Assert.AreEqual(3f, secondPass.Position.y, Tolerance);
+        Assert.AreEqual(6f, secondPass.Velocity.y, Tolerance);
     }
 
     [Test]
