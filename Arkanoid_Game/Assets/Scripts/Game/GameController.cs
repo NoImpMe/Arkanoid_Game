@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private Hud hud;
 
     private GameSession session;
+    private HighScoreStore highScoreStore;
 
     public GameState State { get; private set; }
     public int Score => session.Score;
@@ -28,7 +29,14 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
-        session = new GameSession(gameConfig.startingLives, SessionHighScore.Get(gameConfig.initialHighScore));
+        highScoreStore = HighScoreStore.CreateInPersistentData(gameConfig.highScoreFileName);
+        int savedHighScore = highScoreStore.Load(out HighScoreLoadStatus loadStatus);
+        if (loadStatus == HighScoreLoadStatus.ResetAfterCorruption)
+        {
+            Debug.LogWarning($"High score file was unreadable and has been reset: {highScoreStore.FilePath}");
+        }
+
+        session = new GameSession(gameConfig.startingLives, savedHighScore);
         hud.CreateLifeIcons(session.ReserveLives);
         RefreshHud();
         EnterReady();
@@ -71,7 +79,6 @@ public class GameController : MonoBehaviour
     private void HandleBrickDestroyed(Brick brick)
     {
         session.AddScore(brick.Score);
-        SessionHighScore.Submit(session.HighScore);
         brickField.NotifyBrickDestroyed();
         RefreshHud();
 
@@ -106,6 +113,25 @@ public class GameController : MonoBehaviour
         State = endState;
         ball.PlaceAt(ball.transform.position);
         hud.ShowMessage($"{message}\n\n{gameConfig.restartHint}");
+        SaveHighScore();
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveHighScore();
+    }
+
+    private void SaveHighScore()
+    {
+        if (session == null || highScoreStore == null)
+        {
+            return;
+        }
+
+        if (!highScoreStore.TrySave(session.HighScore))
+        {
+            Debug.LogWarning($"Failed to save high score: {highScoreStore.FilePath}");
+        }
     }
 
     private void RefreshHud()

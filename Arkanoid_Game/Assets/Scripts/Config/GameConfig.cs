@@ -5,7 +5,9 @@ public class GameConfig : ScriptableObject
 {
     [Header("Rules")]
     public int startingLives = 3;
-    public int initialHighScore = 50000;
+
+    [Header("High Score Save")]
+    public string highScoreFileName = "highscore.dat";
 
     [Header("Messages")]
     public string readyMessage = "PRESS SPACE";

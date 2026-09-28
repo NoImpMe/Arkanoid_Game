@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GameConfig
   m_EditorClassIdentifier: Arkanoid::GameConfig
   startingLives: 3
-  initialHighScore: 50000
+  highScoreFileName: highscore.dat
   readyMessage: PRESS SPACE
   clearMessage: ROUND CLEAR
   gameOverMessage: GAME OVER
