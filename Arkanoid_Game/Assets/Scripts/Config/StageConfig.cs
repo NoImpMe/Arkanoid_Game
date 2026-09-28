@@ -29,6 +29,19 @@ public class StageConfig : ScriptableObject
         new BrickRowDefinition(1, 80)
     };
 
+    [Header("Gold Bricks")]
+    public Vector2Int[] goldBrickCells =
+    {
+        new Vector2Int(5, 0),
+        new Vector2Int(5, 3),
+        new Vector2Int(5, 6),
+        new Vector2Int(5, 9),
+        new Vector2Int(5, 12)
+    };
+    public Sprite goldBrickSprite;
+    public Color goldBrickTint = new Color(1f, 0.82f, 0.25f, 1f);
+    public Color goldBrickHitFlashColor = new Color(1f, 1f, 1f, 1f);
+
     [Header("Brick Visuals")]
     public Vector2 brickShadowOffset = new Vector2(0.25f, -0.25f);
     public Color brickShadowColor = new Color(0f, 0f, 0f, 0.5f);
