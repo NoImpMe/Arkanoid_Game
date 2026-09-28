@@ -8,12 +8,14 @@ public class Ball : MonoBehaviour
 
     private BallMover mover;
     private Action<Collider> brickHitHandler;
+    private readonly CatchHold hold = new CatchHold();
 
     public event Action<Brick> BrickDestroyed;
 
     public Vector2 Velocity { get; private set; }
     public float VerticalSpeed { get; private set; }
     public float Radius => ballConfig.radius;
+    public bool IsHeld => hold.IsHolding;
 
     private void Awake()
     {
@@ -26,10 +28,12 @@ public class Ball : MonoBehaviour
     {
         transform.position = position;
         Velocity = Vector2.zero;
+        hold.Stop();
     }
 
     public void Launch()
     {
+        hold.Stop();
         VerticalSpeed = ballConfig.initialVerticalSpeed;
         Velocity = BallBounce.VelocityFromAngle(VerticalSpeed, ballConfig.launchAngleDegrees);
     }
@@ -40,20 +44,48 @@ public class Ball : MonoBehaviour
         Velocity = BallSpeed.WithVerticalSpeed(Velocity, VerticalSpeed);
     }
 
-    public bool Step(float deltaTime)
+    public BallMoveResult Step(float deltaTime, bool catchOnPaddle)
     {
         Physics.SyncTransforms();
-        BallMoveResult result = mover.Move(transform.position, Velocity, deltaTime, brickHitHandler);
+        BallMoveResult result = mover.Move(transform.position, Velocity, deltaTime, brickHitHandler, catchOnPaddle);
         transform.position = result.Position;
 
-        if (result.ReachedDeadZone)
+        if (result.ReachedDeadZone || result.CaughtByPaddle)
         {
             Velocity = Vector2.zero;
-            return true;
+            return result;
         }
 
         Velocity = BallSpeed.WithVerticalSpeed(result.Velocity, VerticalSpeed);
-        return false;
+        return result;
+    }
+
+    public void StartHold(Paddle paddle, float autoReleaseSeconds)
+    {
+        float halfWidth = paddle.Width * 0.5f;
+        hold.Start(transform.position.x, paddle.transform.position.x, halfWidth, autoReleaseSeconds);
+        Velocity = Vector2.zero;
+        FollowPaddle(paddle, halfWidth);
+    }
+
+    public bool TickHold(Paddle paddle, float deltaTime)
+    {
+        FollowPaddle(paddle, paddle.Width * 0.5f);
+        return hold.Tick(deltaTime);
+    }
+
+    public void ReleaseFromPaddle(Paddle paddle)
+    {
+        float hitOffset = BallBounce.PaddleHitOffset(transform.position.x, paddle.transform.position.x, paddle.Width);
+        Velocity = BallBounce.BounceOffPaddle(VerticalSpeed, hitOffset, ballConfig.maxBounceAngleDegrees);
+        hold.Stop();
+    }
+
+    private void FollowPaddle(Paddle paddle, float paddleHalfWidth)
+    {
+        Vector3 restPosition = paddle.BallRestPosition(Radius);
+        restPosition.x = hold.HeldX(paddle.transform.position.x, paddleHalfWidth);
+        transform.position = restPosition;
     }
 
     private void HandleBrickHit(Collider brickCollider)

@@ -30,4 +30,7 @@ public class ItemConfig : ScriptableObject
 
     [Header("Enlarge")]
     public float enlargeWidthMultiplier = 1.5f;
+
+    [Header("Catch")]
+    public float catchAutoReleaseSeconds = 2f;
 }

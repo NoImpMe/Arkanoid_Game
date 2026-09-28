@@ -221,4 +221,76 @@ public class BallMoverTests
         Assert.AreEqual(6f, result.Velocity.y, Tolerance);
         Assert.AreEqual(6f * Mathf.Tan(expectedAngle * Mathf.Deg2Rad), result.Velocity.x, Tolerance);
     }
+
+    [Test]
+    public void Move_CatchOntoPaddle_StopsAtContactAndReportsCaught()
+    {
+        CreateBox("Paddle", new Vector2(0f, -8.35f), new Vector2(2f, 0.5f));
+
+        BallMoveResult result = mover.Move(new Vector3(0.6f, -7f, 0f), new Vector2(0f, -6f), 0.5f, null, true);
+
+        Assert.IsTrue(result.CaughtByPaddle);
+        Assert.IsFalse(result.ReachedDeadZone);
+        Assert.AreEqual(0.6f, result.Position.x, Tolerance);
+        Assert.GreaterOrEqual(result.Position.y - Radius, -8.1f);
+        Assert.Less(result.Position.y - Radius, -8.1f + Skin * 2f);
+    }
+
+    [Test]
+    public void Move_CatchDisabled_StillBouncesOffPaddle()
+    {
+        CreateBox("Paddle", new Vector2(0f, -8.35f), new Vector2(2f, 0.5f));
+
+        BallMoveResult result = mover.Move(new Vector3(0.6f, -7f, 0f), new Vector2(0f, -6f), 0.5f, null, false);
+
+        Assert.IsFalse(result.CaughtByPaddle);
+        Assert.Greater(result.Velocity.y, 0f);
+    }
+
+    [Test]
+    public void Move_CatchUpwardThroughPaddle_IgnoresPaddle()
+    {
+        CreateBox("Paddle", new Vector2(0f, -8.35f), new Vector2(2f, 0.5f));
+
+        BallMoveResult result = mover.Move(new Vector3(0f, -9.2f, 0f), new Vector2(0f, 6f), 0.5f, null, true);
+
+        Assert.IsFalse(result.CaughtByPaddle);
+        Assert.AreEqual(-6.2f, result.Position.y, Tolerance);
+    }
+
+    [Test]
+    public void Move_CatchPaddleOverlapsFallingBall_CaughtAboveTheTop()
+    {
+        CreateBox("Paddle", new Vector2(0f, -8.35f), new Vector2(2f, 0.5f));
+
+        BallMoveResult result = mover.Move(new Vector3(0.95f, -8.2f, 0f), new Vector2(0f, -6f), 0.016f, null, true);
+
+        Assert.IsTrue(result.CaughtByPaddle);
+        Assert.GreaterOrEqual(result.Position.y - Radius, -8.1f);
+    }
+
+    [Test]
+    public void Move_CatchMode_WallAndBrickStillReflect()
+    {
+        BoxCollider brick = CreateBox("Brick", new Vector2(0f, 2f), new Vector2(1f, 0.5f));
+        List<Collider> hitBricks = new List<Collider>();
+
+        BallMoveResult result = mover.Move(Vector3.zero, new Vector2(0f, 6f), 0.5f, hitBricks.Add, true);
+
+        Assert.IsFalse(result.CaughtByPaddle);
+        Assert.AreEqual(1, hitBricks.Count);
+        Assert.AreSame(brick, hitBricks[0]);
+        Assert.Less(result.Velocity.y, 0f);
+    }
+
+    [Test]
+    public void Move_CatchAtMaxSpeed_DoesNotTunnelThroughPaddle()
+    {
+        CreateBox("Paddle", new Vector2(0f, -8.35f), new Vector2(2f, 0.5f));
+
+        BallMoveResult result = mover.Move(new Vector3(0f, -4f, 0f), new Vector2(0f, -18f), MaxFrameTime, null, true);
+
+        Assert.IsTrue(result.CaughtByPaddle);
+        Assert.GreaterOrEqual(result.Position.y - Radius, -8.1f);
+    }
 }

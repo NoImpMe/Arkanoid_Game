@@ -65,15 +65,26 @@ public class GameController : MonoBehaviour
                 break;
             case GameState.Playing:
                 paddle.Step(deltaTime);
-                bool reachedDeadZone = ball.Step(deltaTime);
-                if (State != GameState.Playing)
+                if (ball.IsHeld)
                 {
-                    break;
+                    UpdateHeldBall(deltaTime);
                 }
-                if (reachedDeadZone)
+                else
                 {
-                    HandleMiss();
-                    break;
+                    BallMoveResult moveResult = ball.Step(deltaTime, paddleMode == PaddleMode.Catch);
+                    if (State != GameState.Playing)
+                    {
+                        break;
+                    }
+                    if (moveResult.ReachedDeadZone)
+                    {
+                        HandleMiss();
+                        break;
+                    }
+                    if (moveResult.CaughtByPaddle)
+                    {
+                        ball.StartHold(paddle, itemConfig.catchAutoReleaseSeconds);
+                    }
                 }
                 if (itemController.Step(deltaTime, paddle.Area, out ItemType caughtType))
                 {
@@ -87,6 +98,15 @@ public class GameController : MonoBehaviour
                     RestartScene();
                 }
                 break;
+        }
+    }
+
+    private void UpdateHeldBall(float deltaTime)
+    {
+        bool autoRelease = ball.TickHold(paddle, deltaTime);
+        if (autoRelease || IsKeyPressed(Key.Space))
+        {
+            ball.ReleaseFromPaddle(paddle);
         }
     }
 

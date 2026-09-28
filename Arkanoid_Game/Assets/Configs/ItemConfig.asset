@@ -46,3 +46,4 @@ MonoBehaviour:
   maxReserveLives: 5
   slowVerticalSpeed: 4
   enlargeWidthMultiplier: 1.5
+  catchAutoReleaseSeconds: 2

@@ -39,12 +39,17 @@ public class BallMover
             config.deadZoneLayers);
     }
 
-    public BallMoveResult Move(Vector3 position, Vector2 velocity, float deltaTime, Action<Collider> onBrickHit = null)
+    public BallMoveResult Move(Vector3 position, Vector2 velocity, float deltaTime, Action<Collider> onBrickHit = null,
+        bool catchOnPaddle = false)
     {
         if (velocity.y < 0f && TryFindOverlappingPaddle(position, out Collider overlappedPaddle))
         {
-            velocity = BounceOffPaddle(overlappedPaddle, position, velocity);
             position.y = Mathf.Max(position.y, overlappedPaddle.bounds.max.y + radius + skinWidth);
+            if (catchOnPaddle)
+            {
+                return new BallMoveResult(position, velocity, false, true);
+            }
+            velocity = BounceOffPaddle(overlappedPaddle, position, velocity);
         }
 
         float remainingDistance = velocity.magnitude * deltaTime;
@@ -73,6 +78,10 @@ public class BallMover
 
             if (IsInMask(hit.collider, paddleMask))
             {
+                if (catchOnPaddle)
+                {
+                    return new BallMoveResult(position, velocity, false, true);
+                }
                 velocity = BounceOffPaddle(hit.collider, position, velocity);
                 continue;
             }
