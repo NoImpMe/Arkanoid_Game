@@ -51,8 +51,6 @@ MonoBehaviour:
   goldBrickSprite: {fileID: 906437850, guid: c2197fec08247f149926565c674404ac, type: 3}
   goldBrickTint: {r: 1, g: 0.82, b: 0.25, a: 1}
   goldBrickHitFlashColor: {r: 1, g: 1, b: 1, a: 1}
-  useRandomLayout: 0
-  randomLayoutSeed: 0
   brickShadowOffset: {x: 0.25, y: -0.25}
   brickShadowColor: {r: 0, g: 0, b: 0, a: 0.5}
   hitFlashDuration: 0.15

@@ -45,10 +45,6 @@ public class BrickField : MonoBehaviour
     private BrickLayoutPlan CreatePlan(BrickGridLayout layout)
     {
         BrickLayoutPlan defaultPlan = BrickLayoutPlan.CreateDefault(layout.Rows, layout.Columns, stageConfig.goldBrickCells);
-        if (!stageConfig.useRandomLayout)
-        {
-            return defaultPlan;
-        }
-        return BrickLayoutPlan.CreateRandom(defaultPlan, BrickLayoutPlan.CreateRandomSource(stageConfig.randomLayoutSeed));
+        return BrickLayoutPlan.ForSession(defaultPlan, LayoutSession.HasFinishedGame, new System.Random());
     }
 }

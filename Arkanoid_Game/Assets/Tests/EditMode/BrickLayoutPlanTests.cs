@@ -197,10 +197,8 @@ public class BrickLayoutPlanTests
     {
         StageConfig config = ScriptableObject.CreateInstance<StageConfig>();
         BrickLayoutPlan plan = BrickLayoutPlan.CreateDefault(config.brickRows.Length, config.brickColumns, config.goldBrickCells);
-        bool randomOff = !config.useRandomLayout;
         UnityEngine.Object.DestroyImmediate(config);
 
-        Assert.IsTrue(randomOff);
         foreach (Vector2Int cell in SpecGoldCells)
         {
             Assert.IsTrue(plan.IsGold(cell.x, cell.y));
@@ -339,11 +337,39 @@ public class BrickLayoutPlanTests
     }
 
     [Test]
-    public void CreateRandomSource_NonZeroSeedIsDeterministic()
+    public void ForSession_FirstGame_ReturnsDefaultPlanUnchanged()
     {
-        System.Random first = BrickLayoutPlan.CreateRandomSource(7);
-        System.Random second = BrickLayoutPlan.CreateRandomSource(7);
+        BrickLayoutPlan defaultPlan = CreateSpecDefault();
 
-        Assert.AreEqual(first.Next(), second.Next());
+        BrickLayoutPlan chosen = BrickLayoutPlan.ForSession(defaultPlan, false, new System.Random(1));
+
+        Assert.AreSame(defaultPlan, chosen);
+    }
+
+    [Test]
+    public void ForSession_AfterGameFinished_ReturnsRandomPlanWithSameComposition()
+    {
+        BrickLayoutPlan defaultPlan = CreateSpecDefault();
+
+        BrickLayoutPlan chosen = BrickLayoutPlan.ForSession(defaultPlan, true, new System.Random(1));
+
+        Assert.AreNotSame(defaultPlan, chosen);
+        CollectionAssert.AreEqual(CountByDefinition(defaultPlan), CountByDefinition(chosen));
+        Assert.AreEqual(6750, TotalScore(chosen));
+    }
+
+    [Test]
+    public void ForSession_AfterGameFinished_SameSeedMatchesCreateRandom()
+    {
+        BrickLayoutPlan viaSession = BrickLayoutPlan.ForSession(CreateSpecDefault(), true, new System.Random(9));
+        BrickLayoutPlan direct = CreateSpecRandom(9);
+
+        for (int row = 0; row < Rows; row++)
+        {
+            for (int column = 0; column < Columns; column++)
+            {
+                Assert.AreEqual(direct.RowDefinitionIndex(row, column), viaSession.RowDefinitionIndex(row, column));
+            }
+        }
     }
 }

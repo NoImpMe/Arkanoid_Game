@@ -42,10 +42,6 @@ public class StageConfig : ScriptableObject
     public Color goldBrickTint = new Color(1f, 0.82f, 0.25f, 1f);
     public Color goldBrickHitFlashColor = new Color(1f, 1f, 1f, 1f);
 
-    [Header("Random Layout")]
-    public bool useRandomLayout = false;
-    public int randomLayoutSeed = 0;
-
     [Header("Brick Visuals")]
     public Vector2 brickShadowOffset = new Vector2(0.25f, -0.25f);
     public Color brickShadowColor = new Color(0f, 0f, 0f, 0.5f);

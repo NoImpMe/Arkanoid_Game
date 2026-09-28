@@ -5,7 +5,6 @@ using UnityEngine;
 public class BrickLayoutPlan
 {
     public const int GoldCell = -1;
-    private const int NewSeedEveryTime = 0;
 
     private readonly int[,] cells;
 
@@ -102,9 +101,9 @@ public class BrickLayoutPlan
         return new BrickLayoutPlan(cells);
     }
 
-    public static System.Random CreateRandomSource(int seed)
+    public static BrickLayoutPlan ForSession(BrickLayoutPlan defaultPlan, bool hasFinishedGame, System.Random random)
     {
-        return seed == NewSeedEveryTime ? new System.Random() : new System.Random(seed);
+        return hasFinishedGame ? CreateRandom(defaultPlan, random) : defaultPlan;
     }
 
     public bool IsGold(int row, int column)

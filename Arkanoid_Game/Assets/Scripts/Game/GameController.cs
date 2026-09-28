@@ -113,6 +113,7 @@ public class GameController : MonoBehaviour
         State = endState;
         ball.PlaceAt(ball.transform.position);
         hud.ShowMessage($"{message}\n\n{gameConfig.restartHint}");
+        LayoutSession.MarkGameFinished();
         SaveHighScore();
     }
 
