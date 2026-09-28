@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,8 +13,10 @@ public class GameController : MonoBehaviour
     [SerializeField] private BrickField brickField;
     [SerializeField] private Hud hud;
     [SerializeField] private ItemController itemController;
+    [SerializeField] private LaserController laserController;
 
     private readonly List<Ball> balls = new List<Ball>();
+    private Action<Brick> brickDestroyedHandler;
     private GameSession session;
     private HighScoreStore highScoreStore;
     private PaddleMode paddleMode;
@@ -25,6 +28,7 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
+        brickDestroyedHandler = HandleBrickDestroyed;
         balls.Add(ball);
         for (int index = 1; index < itemConfig.disruptionBallCount; index++)
         {
@@ -84,7 +88,17 @@ public class GameController : MonoBehaviour
                 break;
             case GameState.Playing:
                 paddle.Step(deltaTime);
-                StepBalls(deltaTime);
+                bool spacePressed = IsKeyPressed(Key.Space);
+                if (spacePressed && LaserMath.SpaceFiresLaser(HasHeldBall(), paddleMode))
+                {
+                    laserController.TryFire(paddle);
+                }
+                StepBalls(deltaTime, spacePressed);
+                if (State != GameState.Playing)
+                {
+                    break;
+                }
+                laserController.Step(deltaTime, brickDestroyedHandler);
                 if (State != GameState.Playing)
                 {
                     break;
@@ -109,9 +123,8 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void StepBalls(float deltaTime)
+    private void StepBalls(float deltaTime, bool releasePressed)
     {
-        bool releasePressed = IsKeyPressed(Key.Space);
         foreach (Ball eachBall in balls)
         {
             if (!eachBall.gameObject.activeSelf)
@@ -228,6 +241,18 @@ public class GameController : MonoBehaviour
         return null;
     }
 
+    private bool HasHeldBall()
+    {
+        foreach (Ball eachBall in balls)
+        {
+            if (eachBall.gameObject.activeSelf && eachBall.IsHeld)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private int CountActiveBalls()
     {
         int count = 0;
@@ -245,11 +270,13 @@ public class GameController : MonoBehaviour
     {
         paddleMode = mode;
         paddle.SetWidth(PaddleModeRule.WidthFor(mode, paddle.NormalWidth, itemConfig.enlargeWidthMultiplier));
+        paddle.SetTint(mode == PaddleMode.Laser ? itemConfig.laserPaddleTint : Color.white);
     }
 
     private void HandleMiss()
     {
         itemController.ClearAll();
+        laserController.ClearAll();
         SetPaddleMode(PaddleMode.None);
         session.LoseLife();
         RefreshHud();

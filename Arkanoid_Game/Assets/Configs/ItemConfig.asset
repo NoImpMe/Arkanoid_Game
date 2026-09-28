@@ -49,3 +49,12 @@ MonoBehaviour:
   catchAutoReleaseSeconds: 2
   disruptionBallCount: 3
   disruptionSpreadDegrees: 15
+  laserSize: {x: 0.1, y: 0.5}
+  laserSpeed: 15
+  laserMuzzleInset: 0.2
+  laserHitLayers:
+    serializedVersion: 2
+    m_Bits: 320
+  laserSprite: {fileID: 906437850, guid: c2197fec08247f149926565c674404ac, type: 3}
+  laserTint: {r: 1, g: 0.35, b: 0.35, a: 1}
+  laserPaddleTint: {r: 1, g: 0.6, b: 0.6, a: 1}

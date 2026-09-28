@@ -37,4 +37,13 @@ public class ItemConfig : ScriptableObject
     [Header("Disruption")]
     public int disruptionBallCount = 3;
     public float disruptionSpreadDegrees = 15f;
+
+    [Header("Lasers")]
+    public Vector2 laserSize = new Vector2(0.1f, 0.5f);
+    public float laserSpeed = 15f;
+    public float laserMuzzleInset = 0.2f;
+    public LayerMask laserHitLayers;
+    public Sprite laserSprite;
+    public Color laserTint = new Color(1f, 0.35f, 0.35f, 1f);
+    public Color laserPaddleTint = new Color(1f, 0.6f, 0.6f, 1f);
 }

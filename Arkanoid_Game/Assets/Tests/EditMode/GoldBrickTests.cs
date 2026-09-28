@@ -136,6 +136,53 @@ public class GoldBrickTests
     }
 
     [Test]
+    public void LaserHit_GreenBrick_DestroyedOnFirstHit()
+    {
+        Brick green = CreateBrick(BrickSetup.FromRow(config.brickRows[5], config));
+
+        Assert.IsTrue(LaserMover.TryDestroyBrick(green.GetComponent<Collider>(), out Brick destroyed));
+        Assert.AreSame(green, destroyed);
+        Assert.IsFalse(green.gameObject.activeSelf);
+    }
+
+    [Test]
+    public void LaserHit_SilverBrick_LosesDurabilityThenDestroyed()
+    {
+        config.brickRows[0].sprite = sprite;
+        Brick silver = CreateBrick(BrickSetup.FromRow(config.brickRows[0], config));
+        Collider silverCollider = silver.GetComponent<Collider>();
+
+        Assert.IsFalse(LaserMover.TryDestroyBrick(silverCollider, out Brick firstResult));
+        Assert.IsNull(firstResult);
+        Assert.IsTrue(silver.gameObject.activeSelf);
+        Assert.IsTrue(LaserMover.TryDestroyBrick(silverCollider, out Brick secondResult));
+        Assert.AreSame(silver, secondResult);
+    }
+
+    [Test]
+    public void LaserHit_GoldBrick_NeverDestroyed()
+    {
+        Brick gold = CreateBrick(BrickSetup.Gold(config));
+
+        for (int hit = 0; hit < 10; hit++)
+        {
+            Assert.IsFalse(LaserMover.TryDestroyBrick(gold.GetComponent<Collider>(), out _));
+        }
+        Assert.IsTrue(gold.gameObject.activeSelf);
+    }
+
+    [Test]
+    public void LaserHit_NonBrickCollider_DestroysNothing()
+    {
+        GameObject wall = new GameObject("Wall");
+        createdObjects.Add(wall);
+
+        Assert.IsFalse(LaserMover.TryDestroyBrick(wall.AddComponent<BoxCollider>(), out Brick destroyed));
+        Assert.IsNull(destroyed);
+        Assert.IsFalse(LaserMover.TryDestroyBrick(null, out _));
+    }
+
+    [Test]
     public void Brick_Init_CopiesCanDropItemFromSetup()
     {
         Assert.IsTrue(CreateBrick(BrickSetup.FromRow(config.brickRows[5], config)).CanDropItem);
