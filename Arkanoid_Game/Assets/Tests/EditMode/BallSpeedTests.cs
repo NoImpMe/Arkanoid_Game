@@ -71,6 +71,29 @@ public class BallSpeedTests
     }
 
     [Test]
+    public void RestoredFromSlow_AddsBackReductionIncludingSpeedGainedWhileSlowed()
+    {
+        float before = 6.5f;
+        float slowed = BallSpeed.Slowed(before, 4f);
+        float reduction = before - slowed;
+        float afterFourBricks = slowed + 4 * 0.05f;
+
+        Assert.AreEqual(6.7f, BallSpeed.RestoredFromSlow(afterFourBricks, reduction, 9f), 1e-4f);
+    }
+
+    [Test]
+    public void RestoredFromSlow_StopsAtMaxVerticalSpeed()
+    {
+        Assert.AreEqual(9f, BallSpeed.RestoredFromSlow(5f, 5f, 9f), 1e-5f);
+    }
+
+    [Test]
+    public void RestoredFromSlow_NoReduction_Unchanged()
+    {
+        Assert.AreEqual(3.5f, BallSpeed.RestoredFromSlow(3.5f, 0f, 9f), 1e-5f);
+    }
+
+    [Test]
     public void Slowed_AppliedToVelocity_KeepsAngle()
     {
         Vector2 velocity = BallBounce.VelocityFromAngle(6f, 30f);

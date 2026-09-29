@@ -38,6 +38,24 @@ public class PaddleModeRuleTests
     }
 
     [Test]
+    public void HasDuration_OnlyLaserAndEnlarge()
+    {
+        Assert.IsTrue(PaddleModeRule.HasDuration(PaddleMode.Laser));
+        Assert.IsTrue(PaddleModeRule.HasDuration(PaddleMode.Enlarge));
+        Assert.IsFalse(PaddleModeRule.HasDuration(PaddleMode.Catch));
+        Assert.IsFalse(PaddleModeRule.HasDuration(PaddleMode.None));
+    }
+
+    [Test]
+    public void DurationFor_UsesEachModeDuration()
+    {
+        Assert.AreEqual(5f, PaddleModeRule.DurationFor(PaddleMode.Laser, 5f, 7f), 1e-5f);
+        Assert.AreEqual(7f, PaddleModeRule.DurationFor(PaddleMode.Enlarge, 5f, 7f), 1e-5f);
+        Assert.AreEqual(0f, PaddleModeRule.DurationFor(PaddleMode.Catch, 5f, 7f), 1e-5f);
+        Assert.AreEqual(0f, PaddleModeRule.DurationFor(PaddleMode.None, 5f, 7f), 1e-5f);
+    }
+
+    [Test]
     public void WidthFor_DefaultConfigs_EnlargeIsThreeOthersAreTwo()
     {
         PaddleConfig paddleConfig = ScriptableObject.CreateInstance<PaddleConfig>();

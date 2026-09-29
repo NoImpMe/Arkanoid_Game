@@ -27,9 +27,11 @@ public class ItemConfig : ScriptableObject
 
     [Header("Slow")]
     public float slowVerticalSpeed = 4f;
+    public float slowDurationSeconds = 5f;
 
     [Header("Enlarge")]
     public float enlargeWidthMultiplier = 1.5f;
+    public float enlargeDurationSeconds = 5f;
 
     [Header("Catch")]
     public float catchAutoReleaseSeconds = 2f;

@@ -45,7 +45,9 @@ MonoBehaviour:
   letterColor: {r: 1, g: 1, b: 1, a: 1}
   maxReserveLives: 5
   slowVerticalSpeed: 4
+  slowDurationSeconds: 5
   enlargeWidthMultiplier: 1.5
+  enlargeDurationSeconds: 5
   catchAutoReleaseSeconds: 2
   disruptionBallCount: 3
   disruptionSpreadDegrees: 15

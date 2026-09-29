@@ -16,7 +16,8 @@ public class GameController : MonoBehaviour
     [SerializeField] private LaserController laserController;
 
     private readonly List<Ball> balls = new List<Ball>();
-    private readonly LaserModeTimer laserModeTimer = new LaserModeTimer();
+    private readonly EffectTimer paddleModeTimer = new EffectTimer();
+    private readonly EffectTimer slowTimer = new EffectTimer();
     private Action<Brick> brickDestroyedHandler;
     private GameSession session;
     private HighScoreStore highScoreStore;
@@ -89,9 +90,13 @@ public class GameController : MonoBehaviour
                 break;
             case GameState.Playing:
                 paddle.Step(deltaTime);
-                if (laserModeTimer.Tick(deltaTime))
+                if (paddleModeTimer.Tick(deltaTime))
                 {
                     SetPaddleMode(PaddleMode.None);
+                }
+                if (slowTimer.Tick(deltaTime))
+                {
+                    RestoreBallsFromSlow();
                 }
                 if (LaserMath.IsAutoFireMode(paddleMode))
                 {
@@ -194,6 +199,7 @@ public class GameController : MonoBehaviour
                         eachBall.SlowDown(itemConfig.slowVerticalSpeed);
                     }
                 }
+                slowTimer.Start(itemConfig.slowDurationSeconds);
                 break;
             case ItemType.Disruption:
                 SplitBall();
@@ -201,9 +207,20 @@ public class GameController : MonoBehaviour
         }
 
         SetPaddleMode(PaddleModeRule.AfterPickup(paddleMode, itemType));
-        if (itemType == ItemType.Lasers)
+        if (itemType == ItemType.Lasers || itemType == ItemType.Enlarge)
         {
-            laserModeTimer.Start(itemConfig.laserDurationSeconds);
+            paddleModeTimer.Start(PaddleModeRule.DurationFor(paddleMode, itemConfig.laserDurationSeconds, itemConfig.enlargeDurationSeconds));
+        }
+    }
+
+    private void RestoreBallsFromSlow()
+    {
+        foreach (Ball eachBall in balls)
+        {
+            if (eachBall.gameObject.activeSelf)
+            {
+                eachBall.RestoreFromSlow();
+            }
         }
     }
 
@@ -232,7 +249,7 @@ public class GameController : MonoBehaviour
             if (!eachBall.gameObject.activeSelf)
             {
                 eachBall.gameObject.SetActive(true);
-                eachBall.LaunchFrom(sourceBall.transform.position, sourceBall.VerticalSpeed, velocity);
+                eachBall.LaunchFrom(sourceBall.transform.position, sourceBall.VerticalSpeed, sourceBall.SlowReduction, velocity);
                 return;
             }
         }
@@ -266,9 +283,9 @@ public class GameController : MonoBehaviour
     private void SetPaddleMode(PaddleMode mode)
     {
         paddleMode = mode;
-        if (mode != PaddleMode.Laser)
+        if (!PaddleModeRule.HasDuration(mode))
         {
-            laserModeTimer.Stop();
+            paddleModeTimer.Stop();
         }
         paddle.SetWidth(PaddleModeRule.WidthFor(mode, paddle.NormalWidth, itemConfig.enlargeWidthMultiplier));
         paddle.SetTint(mode == PaddleMode.Laser ? itemConfig.laserPaddleTint : Color.white);
@@ -279,6 +296,7 @@ public class GameController : MonoBehaviour
         itemController.ClearAll();
         laserController.ClearAll();
         SetPaddleMode(PaddleMode.None);
+        slowTimer.Stop();
         session.LoseLife();
         RefreshHud();
 

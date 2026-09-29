@@ -1,4 +1,4 @@
-public class LaserModeTimer
+public class EffectTimer
 {
     public bool IsRunning { get; private set; }
     public float RemainingSeconds { get; private set; }

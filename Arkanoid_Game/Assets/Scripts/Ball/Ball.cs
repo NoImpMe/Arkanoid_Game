@@ -14,6 +14,7 @@ public class Ball : MonoBehaviour
 
     public Vector2 Velocity { get; private set; }
     public float VerticalSpeed { get; private set; }
+    public float SlowReduction { get; private set; }
     public float Radius => ballConfig.radius;
     public bool IsHeld => hold.IsHolding;
     public float MaxBounceAngleDegrees => ballConfig.maxBounceAngleDegrees;
@@ -36,20 +37,31 @@ public class Ball : MonoBehaviour
     {
         hold.Stop();
         VerticalSpeed = ballConfig.initialVerticalSpeed;
+        SlowReduction = 0f;
         Velocity = BallBounce.VelocityFromAngle(VerticalSpeed, ballConfig.launchAngleDegrees);
     }
 
-    public void LaunchFrom(Vector3 position, float verticalSpeed, Vector2 velocity)
+    public void LaunchFrom(Vector3 position, float verticalSpeed, float slowReduction, Vector2 velocity)
     {
         hold.Stop();
         transform.position = position;
         VerticalSpeed = verticalSpeed;
+        SlowReduction = slowReduction;
         Velocity = velocity;
     }
 
     public void SlowDown(float slowVerticalSpeed)
     {
-        VerticalSpeed = BallSpeed.Slowed(VerticalSpeed, slowVerticalSpeed);
+        float slowedSpeed = BallSpeed.Slowed(VerticalSpeed, slowVerticalSpeed);
+        SlowReduction += VerticalSpeed - slowedSpeed;
+        VerticalSpeed = slowedSpeed;
+        Velocity = BallSpeed.WithVerticalSpeed(Velocity, VerticalSpeed);
+    }
+
+    public void RestoreFromSlow()
+    {
+        VerticalSpeed = BallSpeed.RestoredFromSlow(VerticalSpeed, SlowReduction, ballConfig.maxVerticalSpeed);
+        SlowReduction = 0f;
         Velocity = BallSpeed.WithVerticalSpeed(Velocity, VerticalSpeed);
     }
 

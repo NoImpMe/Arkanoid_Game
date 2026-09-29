@@ -1,14 +1,14 @@
 using NUnit.Framework;
 using UnityEngine;
 
-public class LaserModeTimerTests
+public class EffectTimerTests
 {
     private const float Tolerance = 0.0001f;
 
     [Test]
     public void Tick_ExpiresOnlyAfterFullDuration()
     {
-        LaserModeTimer timer = new LaserModeTimer();
+        EffectTimer timer = new EffectTimer();
         timer.Start(5f);
 
         Assert.IsFalse(timer.Tick(4.9f));
@@ -22,7 +22,7 @@ public class LaserModeTimerTests
     [Test]
     public void Tick_AfterExpired_DoesNotReportAgain()
     {
-        LaserModeTimer timer = new LaserModeTimer();
+        EffectTimer timer = new EffectTimer();
         timer.Start(5f);
         timer.Tick(6f);
 
@@ -32,7 +32,7 @@ public class LaserModeTimerTests
     [Test]
     public void Tick_NotStarted_NeverExpires()
     {
-        LaserModeTimer timer = new LaserModeTimer();
+        EffectTimer timer = new EffectTimer();
 
         Assert.IsFalse(timer.Tick(10f));
         Assert.IsFalse(timer.IsRunning);
@@ -41,7 +41,7 @@ public class LaserModeTimerTests
     [Test]
     public void Start_AgainWhileRunning_ResetsToFullDuration()
     {
-        LaserModeTimer timer = new LaserModeTimer();
+        EffectTimer timer = new EffectTimer();
         timer.Start(5f);
         timer.Tick(4f);
 
@@ -55,7 +55,7 @@ public class LaserModeTimerTests
     [Test]
     public void Stop_WhileRunning_PreventsExpiry()
     {
-        LaserModeTimer timer = new LaserModeTimer();
+        EffectTimer timer = new EffectTimer();
         timer.Start(5f);
 
         timer.Stop();
@@ -65,11 +65,13 @@ public class LaserModeTimerTests
     }
 
     [Test]
-    public void DefaultConfig_LaserDurationIsFiveSeconds()
+    public void DefaultConfig_LaserEnlargeAndSlowDurationsAreFiveSeconds()
     {
         ItemConfig config = ScriptableObject.CreateInstance<ItemConfig>();
 
         Assert.AreEqual(5f, config.laserDurationSeconds, Tolerance);
+        Assert.AreEqual(5f, config.enlargeDurationSeconds, Tolerance);
+        Assert.AreEqual(5f, config.slowDurationSeconds, Tolerance);
         Object.DestroyImmediate(config);
     }
 }
