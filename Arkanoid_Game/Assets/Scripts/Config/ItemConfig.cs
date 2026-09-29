@@ -43,6 +43,7 @@ public class ItemConfig : ScriptableObject
     public float laserSpeed = 15f;
     public float laserMuzzleInset = 0.2f;
     public float laserFireInterval = 1f;
+    public float laserDurationSeconds = 5f;
     public LayerMask laserHitLayers;
     public Sprite laserSprite;
     public Color laserTint = new Color(1f, 0.35f, 0.35f, 1f);

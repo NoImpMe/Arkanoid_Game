@@ -16,6 +16,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private LaserController laserController;
 
     private readonly List<Ball> balls = new List<Ball>();
+    private readonly LaserModeTimer laserModeTimer = new LaserModeTimer();
     private Action<Brick> brickDestroyedHandler;
     private GameSession session;
     private HighScoreStore highScoreStore;
@@ -88,6 +89,10 @@ public class GameController : MonoBehaviour
                 break;
             case GameState.Playing:
                 paddle.Step(deltaTime);
+                if (laserModeTimer.Tick(deltaTime))
+                {
+                    SetPaddleMode(PaddleMode.None);
+                }
                 if (LaserMath.IsAutoFireMode(paddleMode))
                 {
                     laserController.TryFire(paddle);
@@ -196,6 +201,10 @@ public class GameController : MonoBehaviour
         }
 
         SetPaddleMode(PaddleModeRule.AfterPickup(paddleMode, itemType));
+        if (itemType == ItemType.Lasers)
+        {
+            laserModeTimer.Start(itemConfig.laserDurationSeconds);
+        }
     }
 
     private void SplitBall()
@@ -257,6 +266,10 @@ public class GameController : MonoBehaviour
     private void SetPaddleMode(PaddleMode mode)
     {
         paddleMode = mode;
+        if (mode != PaddleMode.Laser)
+        {
+            laserModeTimer.Stop();
+        }
         paddle.SetWidth(PaddleModeRule.WidthFor(mode, paddle.NormalWidth, itemConfig.enlargeWidthMultiplier));
         paddle.SetTint(mode == PaddleMode.Laser ? itemConfig.laserPaddleTint : Color.white);
     }
