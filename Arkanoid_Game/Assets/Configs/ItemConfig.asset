@@ -52,6 +52,7 @@ MonoBehaviour:
   laserSize: {x: 0.1, y: 0.5}
   laserSpeed: 15
   laserMuzzleInset: 0.2
+  laserFireInterval: 1
   laserHitLayers:
     serializedVersion: 2
     m_Bits: 320

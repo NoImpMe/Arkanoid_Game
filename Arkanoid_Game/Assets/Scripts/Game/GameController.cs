@@ -88,12 +88,11 @@ public class GameController : MonoBehaviour
                 break;
             case GameState.Playing:
                 paddle.Step(deltaTime);
-                bool spacePressed = IsKeyPressed(Key.Space);
-                if (spacePressed && LaserMath.SpaceFiresLaser(HasHeldBall(), paddleMode))
+                if (LaserMath.IsAutoFireMode(paddleMode))
                 {
                     laserController.TryFire(paddle);
                 }
-                StepBalls(deltaTime, spacePressed);
+                StepBalls(deltaTime, IsKeyPressed(Key.Space));
                 if (State != GameState.Playing)
                 {
                     break;
@@ -154,6 +153,7 @@ public class GameController : MonoBehaviour
             else if (moveResult.CaughtByPaddle)
             {
                 eachBall.StartHold(paddle, itemConfig.catchAutoReleaseSeconds);
+                SetPaddleMode(PaddleModeRule.AfterBallCaught(paddleMode));
             }
         }
     }
@@ -239,18 +239,6 @@ public class GameController : MonoBehaviour
             }
         }
         return null;
-    }
-
-    private bool HasHeldBall()
-    {
-        foreach (Ball eachBall in balls)
-        {
-            if (eachBall.gameObject.activeSelf && eachBall.IsHeld)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     private int CountActiveBalls()

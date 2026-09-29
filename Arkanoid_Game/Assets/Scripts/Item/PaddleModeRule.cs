@@ -15,6 +15,11 @@ public static class PaddleModeRule
         }
     }
 
+    public static PaddleMode AfterBallCaught(PaddleMode currentMode)
+    {
+        return currentMode == PaddleMode.Catch ? PaddleMode.None : currentMode;
+    }
+
     public static float WidthFor(PaddleMode mode, float normalWidth, float enlargeWidthMultiplier)
     {
         return mode == PaddleMode.Enlarge ? normalWidth * enlargeWidthMultiplier : normalWidth;

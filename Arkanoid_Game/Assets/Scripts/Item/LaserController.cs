@@ -8,8 +8,9 @@ public class LaserController : MonoBehaviour
     [SerializeField] private LaserShot rightShot;
 
     private LaserMover mover;
+    private float secondsSinceLastFire;
 
-    public bool CanFire => LaserMath.CanFire(leftShot.IsFlying, rightShot.IsFlying);
+    public bool CanFire => LaserMath.CanFire(leftShot.IsFlying, rightShot.IsFlying, secondsSinceLastFire, itemConfig.laserFireInterval);
 
     private void Awake()
     {
@@ -29,11 +30,13 @@ public class LaserController : MonoBehaviour
         float laserHeight = itemConfig.laserSize.y;
         leftShot.Fire(LaserMath.LeftMuzzle(paddleX, paddle.Width, paddleTop, itemConfig.laserMuzzleInset, laserHeight), itemConfig);
         rightShot.Fire(LaserMath.RightMuzzle(paddleX, paddle.Width, paddleTop, itemConfig.laserMuzzleInset, laserHeight), itemConfig);
+        secondsSinceLastFire = 0f;
         return true;
     }
 
     public void Step(float deltaTime, Action<Brick> onBrickDestroyed)
     {
+        secondsSinceLastFire += deltaTime;
         StepShot(leftShot, deltaTime, onBrickDestroyed);
         StepShot(rightShot, deltaTime, onBrickDestroyed);
     }
@@ -42,6 +45,7 @@ public class LaserController : MonoBehaviour
     {
         leftShot.Hide();
         rightShot.Hide();
+        secondsSinceLastFire = itemConfig.laserFireInterval;
     }
 
     private void StepShot(LaserShot shot, float deltaTime, Action<Brick> onBrickDestroyed)

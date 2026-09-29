@@ -24,6 +24,20 @@ public class PaddleModeRuleTests
     }
 
     [Test]
+    public void AfterBallCaught_CatchEndsAfterOneCatch()
+    {
+        Assert.AreEqual(PaddleMode.None, PaddleModeRule.AfterBallCaught(PaddleMode.Catch));
+    }
+
+    [Test]
+    public void AfterBallCaught_OtherModes_AreKept()
+    {
+        Assert.AreEqual(PaddleMode.None, PaddleModeRule.AfterBallCaught(PaddleMode.None));
+        Assert.AreEqual(PaddleMode.Laser, PaddleModeRule.AfterBallCaught(PaddleMode.Laser));
+        Assert.AreEqual(PaddleMode.Enlarge, PaddleModeRule.AfterBallCaught(PaddleMode.Enlarge));
+    }
+
+    [Test]
     public void WidthFor_DefaultConfigs_EnlargeIsThreeOthersAreTwo()
     {
         PaddleConfig paddleConfig = ScriptableObject.CreateInstance<PaddleConfig>();

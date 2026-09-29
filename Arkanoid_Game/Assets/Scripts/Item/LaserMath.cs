@@ -2,14 +2,14 @@ using UnityEngine;
 
 public static class LaserMath
 {
-    public static bool SpaceFiresLaser(bool hasHeldBall, PaddleMode paddleMode)
+    public static bool IsAutoFireMode(PaddleMode paddleMode)
     {
-        return !hasHeldBall && paddleMode == PaddleMode.Laser;
+        return paddleMode == PaddleMode.Laser;
     }
 
-    public static bool CanFire(bool leftFlying, bool rightFlying)
+    public static bool CanFire(bool leftFlying, bool rightFlying, float secondsSinceLastFire, float fireInterval)
     {
-        return !leftFlying && !rightFlying;
+        return !leftFlying && !rightFlying && secondsSinceLastFire >= fireInterval;
     }
 
     public static Vector2 LeftMuzzle(float paddleCenterX, float paddleWidth, float paddleTopY, float muzzleInset, float laserHeight)

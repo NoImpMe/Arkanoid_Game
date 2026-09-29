@@ -25,22 +25,30 @@ public class LaserMathTests
     }
 
     [Test]
-    public void SpaceFiresLaser_OnlyInLaserModeWithoutHeldBall()
+    public void IsAutoFireMode_OnlyInLaserMode()
     {
-        Assert.IsTrue(LaserMath.SpaceFiresLaser(false, PaddleMode.Laser));
-        Assert.IsFalse(LaserMath.SpaceFiresLaser(true, PaddleMode.Laser));
-        Assert.IsFalse(LaserMath.SpaceFiresLaser(false, PaddleMode.None));
-        Assert.IsFalse(LaserMath.SpaceFiresLaser(false, PaddleMode.Enlarge));
-        Assert.IsFalse(LaserMath.SpaceFiresLaser(false, PaddleMode.Catch));
+        Assert.IsTrue(LaserMath.IsAutoFireMode(PaddleMode.Laser));
+        Assert.IsFalse(LaserMath.IsAutoFireMode(PaddleMode.None));
+        Assert.IsFalse(LaserMath.IsAutoFireMode(PaddleMode.Enlarge));
+        Assert.IsFalse(LaserMath.IsAutoFireMode(PaddleMode.Catch));
     }
 
     [Test]
     public void CanFire_OnlyWhenBothShotsAreGone()
     {
-        Assert.IsTrue(LaserMath.CanFire(false, false));
-        Assert.IsFalse(LaserMath.CanFire(true, false));
-        Assert.IsFalse(LaserMath.CanFire(false, true));
-        Assert.IsFalse(LaserMath.CanFire(true, true));
+        Assert.IsTrue(LaserMath.CanFire(false, false, 1f, 1f));
+        Assert.IsFalse(LaserMath.CanFire(true, false, 1f, 1f));
+        Assert.IsFalse(LaserMath.CanFire(false, true, 1f, 1f));
+        Assert.IsFalse(LaserMath.CanFire(true, true, 1f, 1f));
+    }
+
+    [Test]
+    public void CanFire_OnlyAfterFireIntervalHasPassed()
+    {
+        Assert.IsFalse(LaserMath.CanFire(false, false, 0f, 1f));
+        Assert.IsFalse(LaserMath.CanFire(false, false, 0.99f, 1f));
+        Assert.IsTrue(LaserMath.CanFire(false, false, 1f, 1f));
+        Assert.IsTrue(LaserMath.CanFire(false, false, 2.5f, 1f));
     }
 
     [Test]
@@ -51,6 +59,7 @@ public class LaserMathTests
         Assert.AreEqual(new Vector2(0.1f, 0.5f), config.laserSize);
         Assert.AreEqual(15f, config.laserSpeed, Tolerance);
         Assert.AreEqual(0.2f, config.laserMuzzleInset, Tolerance);
+        Assert.AreEqual(1f, config.laserFireInterval, Tolerance);
         Object.DestroyImmediate(config);
     }
 }
