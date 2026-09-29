@@ -237,9 +237,12 @@ public class GameController : MonoBehaviour
             sourceBall.ReleaseFromPaddle(paddle);
         }
 
-        float spread = itemConfig.disruptionSpreadDegrees;
-        LaunchExtraBall(sourceBall, DisruptionSplit.Rotated(sourceBall.Velocity, -spread, sourceBall.MaxBounceAngleDegrees));
-        LaunchExtraBall(sourceBall, DisruptionSplit.Rotated(sourceBall.Velocity, spread, sourceBall.MaxBounceAngleDegrees));
+        Vector2 sourceVelocity = sourceBall.Velocity;
+        float maxAngle = sourceBall.MaxBounceAngleDegrees;
+        (float firstAngle, float secondAngle) = DisruptionSplit.SplitAngles(
+            DisruptionSplit.AngleFromVertical(sourceVelocity), itemConfig.disruptionSpreadDegrees, maxAngle);
+        LaunchExtraBall(sourceBall, DisruptionSplit.WithAngle(sourceVelocity, firstAngle, maxAngle));
+        LaunchExtraBall(sourceBall, DisruptionSplit.WithAngle(sourceVelocity, secondAngle, maxAngle));
     }
 
     private void LaunchExtraBall(Ball sourceBall, Vector2 velocity)

@@ -6,55 +6,64 @@ public class DisruptionSplitTests
     private const float Tolerance = 0.001f;
     private const float MaxAngle = 60f;
 
-    private static void AssertAngleAndVerticalSpeed(Vector2 velocity, float expectedAngle, float expectedVy)
+    private const float Spread = 15f;
+
+    [TestCase(60f, 45f, 30f)]
+    [TestCase(50f, 35f, 20f)]
+    [TestCase(45f, 60f, 30f)]
+    [TestCase(0f, 15f, -15f)]
+    [TestCase(-45f, -30f, -60f)]
+    [TestCase(-50f, -35f, -20f)]
+    [TestCase(-60f, -45f, -30f)]
+    public void SplitAngles_MatchesRule(float original, float expectedFirst, float expectedSecond)
     {
-        Assert.AreEqual(expectedVy, velocity.y, Tolerance);
-        Assert.AreEqual(expectedAngle, DisruptionSplit.AngleFromVertical(velocity), Tolerance);
+        (float first, float second) = DisruptionSplit.SplitAngles(original, Spread, MaxAngle);
+
+        Assert.AreEqual(expectedFirst, first, Tolerance);
+        Assert.AreEqual(expectedSecond, second, Tolerance);
     }
 
-    [Test]
-    public void Rotated_ThirtyDegreesUpward_SplitsToFifteenAndFortyFive()
+    [TestCase(60f)]
+    [TestCase(50f)]
+    [TestCase(45f)]
+    [TestCase(0f)]
+    [TestCase(-45f)]
+    [TestCase(-50f)]
+    [TestCase(-60f)]
+    public void SplitAngles_ThreeBallsAllDifferentAndWithinMax(float original)
     {
-        Vector2 original = BallBounce.VelocityFromAngle(6f, 30f);
+        (float first, float second) = DisruptionSplit.SplitAngles(original, Spread, MaxAngle);
 
-        AssertAngleAndVerticalSpeed(DisruptionSplit.Rotated(original, -15f, MaxAngle), 15f, 6f);
-        AssertAngleAndVerticalSpeed(DisruptionSplit.Rotated(original, 15f, MaxAngle), 45f, 6f);
+        Assert.Greater(Mathf.Abs(first - original), Tolerance);
+        Assert.Greater(Mathf.Abs(second - original), Tolerance);
+        Assert.Greater(Mathf.Abs(first - second), Tolerance);
+        Assert.LessOrEqual(Mathf.Abs(first), MaxAngle + Tolerance);
+        Assert.LessOrEqual(Mathf.Abs(second), MaxAngle + Tolerance);
     }
 
-    [Test]
-    public void Rotated_BeyondMaxAngle_ClampsToSixty()
+    [TestCase(60f, 45f, 30f)]
+    [TestCase(50f, 35f, 20f)]
+    [TestCase(45f, 60f, 30f)]
+    [TestCase(0f, 15f, -15f)]
+    [TestCase(-45f, -30f, -60f)]
+    [TestCase(-50f, -35f, -20f)]
+    [TestCase(-60f, -45f, -30f)]
+    public void SplitVelocities_UpwardAndDownwardBalls_KeepVerticalSpeedAndDirection(float original, float expectedFirst, float expectedSecond)
     {
-        Vector2 original = BallBounce.VelocityFromAngle(6f, 50f);
+        foreach (float verticalSign in new[] { 1f, -1f })
+        {
+            Vector2 source = BallBounce.VelocityFromAngle(6f, original);
+            source.y *= verticalSign;
 
-        AssertAngleAndVerticalSpeed(DisruptionSplit.Rotated(original, -15f, MaxAngle), 35f, 6f);
-        AssertAngleAndVerticalSpeed(DisruptionSplit.Rotated(original, 15f, MaxAngle), 60f, 6f);
+            (float first, float second) = DisruptionSplit.SplitAngles(DisruptionSplit.AngleFromVertical(source), Spread, MaxAngle);
+            Vector2 firstVelocity = DisruptionSplit.WithAngle(source, first, MaxAngle);
+            Vector2 secondVelocity = DisruptionSplit.WithAngle(source, second, MaxAngle);
 
-        Vector2 leftward = BallBounce.VelocityFromAngle(6f, -55f);
-        AssertAngleAndVerticalSpeed(DisruptionSplit.Rotated(leftward, -15f, MaxAngle), -60f, 6f);
-    }
-
-    [Test]
-    public void Rotated_DownwardBall_KeepsDownwardDirectionAndVerticalSpeed()
-    {
-        Vector2 original = new Vector2(7f * Mathf.Tan(30f * Mathf.Deg2Rad), -7f);
-
-        Vector2 rotated = DisruptionSplit.Rotated(original, 15f, MaxAngle);
-
-        Assert.AreEqual(-7f, rotated.y, Tolerance);
-        Assert.AreEqual(7f * Mathf.Tan(45f * Mathf.Deg2Rad), rotated.x, Tolerance);
-    }
-
-    [Test]
-    public void Rotated_StraightUp_SplitsSymmetrically()
-    {
-        Vector2 original = new Vector2(0f, 4f);
-
-        Vector2 left = DisruptionSplit.Rotated(original, -15f, MaxAngle);
-        Vector2 right = DisruptionSplit.Rotated(original, 15f, MaxAngle);
-
-        Assert.AreEqual(-right.x, left.x, Tolerance);
-        Assert.AreEqual(4f, left.y, Tolerance);
-        Assert.AreEqual(4f, right.y, Tolerance);
+            Assert.AreEqual(6f * verticalSign, firstVelocity.y, Tolerance);
+            Assert.AreEqual(6f * verticalSign, secondVelocity.y, Tolerance);
+            Assert.AreEqual(expectedFirst, DisruptionSplit.AngleFromVertical(firstVelocity), Tolerance);
+            Assert.AreEqual(expectedSecond, DisruptionSplit.AngleFromVertical(secondVelocity), Tolerance);
+        }
     }
 
     [TestCase(0, true)]
