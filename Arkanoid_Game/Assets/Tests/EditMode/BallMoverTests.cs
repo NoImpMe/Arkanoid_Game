@@ -107,6 +107,62 @@ public class BallMoverTests
     }
 
     [Test]
+    public void Move_VerticalBallGrazingTopCornerOfUnbreakableBrick_BouncesUpInsteadOfSticking()
+    {
+        CreateBox("Brick", Vector2.zero, new Vector2(1f, 0.5f));
+        Vector3 position = new Vector3(0.608f, 1.5f, 0f);
+        Vector2 velocity = new Vector2(0f, -6f);
+        int framesTouchingBrick = 0;
+
+        for (int frame = 0; frame < 60; frame++)
+        {
+            int hitsThisFrame = 0;
+            BallMoveResult result = mover.Move(position, velocity, 1f / 60f, _ => hitsThisFrame++);
+            position = result.Position;
+            velocity = result.Velocity;
+            if (hitsThisFrame > 0)
+            {
+                framesTouchingBrick++;
+            }
+        }
+
+        Assert.LessOrEqual(framesTouchingBrick, 1);
+        Assert.AreEqual(6f, velocity.y, Tolerance);
+        Assert.Greater(position.y, 1f);
+    }
+
+    [TestCase(0f)]
+    [TestCase(0.3f)]
+    [TestCase(1f)]
+    [TestCase(3.464f)]
+    public void Move_BallFallingAcrossBrickTopCorner_NeverTouchesForMoreThanOneFrame(float horizontalSpeed)
+    {
+        CreateBox("Brick", Vector2.zero, new Vector2(1f, 0.5f));
+
+        for (float offset = 0f; offset <= 0.16f; offset += 0.002f)
+        {
+            Vector3 position = new Vector3(0.5f + offset, 1.5f, 0f);
+            Vector2 velocity = new Vector2(horizontalSpeed, -6f);
+            int framesTouchingBrick = 0;
+
+            for (int frame = 0; frame < 120; frame++)
+            {
+                int hitsThisFrame = 0;
+                BallMoveResult result = mover.Move(position, velocity, 1f / 60f, _ => hitsThisFrame++);
+                position = result.Position;
+                velocity = result.Velocity;
+                if (hitsThisFrame > 0)
+                {
+                    framesTouchingBrick++;
+                }
+            }
+
+            Assert.LessOrEqual(framesTouchingBrick, 1, $"offset {offset}");
+            Assert.AreEqual(6f, Mathf.Abs(velocity.y), Tolerance, $"offset {offset}");
+        }
+    }
+
+    [Test]
     public void Move_OntoPaddleCenter_BouncesStraightUp()
     {
         CreateBox("Paddle", new Vector2(0f, -8.35f), new Vector2(2f, 0.5f));

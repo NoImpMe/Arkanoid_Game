@@ -65,6 +65,41 @@ public class BallBounceTests
     }
 
     [Test]
+    public void ReflectByNormalAxis_VerticalBallOnSideDominantCornerNormal_FlipsBothAndMovesAway()
+    {
+        Vector2 cornerNormal = new Vector2(0.72f, 0.69f).normalized;
+
+        Vector2 result = BallBounce.ReflectByNormalAxis(new Vector2(0f, -VerticalSpeed), cornerNormal);
+
+        Assert.AreEqual(0f, result.x, Tolerance);
+        Assert.AreEqual(VerticalSpeed, result.y, Tolerance);
+        Assert.Greater(Vector2.Dot(result, cornerNormal), 0f);
+    }
+
+    [Test]
+    public void ReflectByNormalAxis_SteepBallOnSideDominantCornerNormal_FlipsBothAndKeepsVerticalSpeed()
+    {
+        Vector2 cornerNormal = new Vector2(0.8f, 0.6f);
+
+        Vector2 result = BallBounce.ReflectByNormalAxis(new Vector2(-3.464f, -VerticalSpeed), cornerNormal);
+
+        Assert.AreEqual(3.464f, result.x, Tolerance);
+        Assert.AreEqual(VerticalSpeed, result.y, Tolerance);
+        Assert.Greater(Vector2.Dot(result, cornerNormal), 0f);
+    }
+
+    [Test]
+    public void ReflectByNormalAxis_ShallowBallOnSideDominantCornerNormal_FlipsOnlyVx()
+    {
+        Vector2 cornerNormal = new Vector2(0.8f, 0.6f);
+
+        Vector2 result = BallBounce.ReflectByNormalAxis(new Vector2(-6f, -3f), cornerNormal);
+
+        Assert.AreEqual(6f, result.x, Tolerance);
+        Assert.AreEqual(-3f, result.y, Tolerance);
+    }
+
+    [Test]
     public void PaddleHitOffset_CenterEdgesAndBeyond_AreClampedToUnitRange()
     {
         Assert.AreEqual(0f, BallBounce.PaddleHitOffset(3f, 3f, 2f), Tolerance);

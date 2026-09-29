@@ -15,6 +15,16 @@ public static class BallBounce
         bool flipX = absNormalX >= absNormalY;
         bool flipY = absNormalY >= absNormalX;
 
+        Vector2 reflected = ReflectAxes(velocity, normal, flipX, flipY);
+        if (Vector2.Dot(reflected, normal) < 0f)
+        {
+            reflected = ReflectAxes(velocity, normal, true, true);
+        }
+        return reflected;
+    }
+
+    private static Vector2 ReflectAxes(Vector2 velocity, Vector2 normal, bool flipX, bool flipY)
+    {
         float vx = flipX ? Mathf.Abs(velocity.x) * Mathf.Sign(normal.x) : velocity.x;
         float vy = flipY ? Mathf.Abs(velocity.y) * Mathf.Sign(normal.y) : velocity.y;
         return new Vector2(vx, vy);
